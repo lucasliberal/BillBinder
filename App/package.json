@@ -17,7 +17,10 @@
     "source-map-resolve": "^0.6.0",
     "source-map-url": "^0.4.1",
     "urix": "^0.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "react-native-web": "~0.18.10",
+    "react-dom": "18.2.0",
+    "@expo/webpack-config": "^18.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
