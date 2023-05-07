@@ -49,11 +49,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderBottomWidth: 2,
         borderTopWidth: 2,  
-        borderColor: '#e7e7e7'
+        borderColor: '#e7e7e7',
     },
     btnAtivo:{
         borderBottomColor: '#14423C',
-        borderBottomWidth: 2
+        borderBottomWidth: 2,
     },
     txt:{
         fontSize: 13,

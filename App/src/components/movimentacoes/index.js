@@ -17,7 +17,8 @@ export default function Movimentacoes( {dado} ){
                         <Text style={styles.descricao}>{dado.descricao}</Text>
                     </View>
                 </View>
-                <Text style={styles.valor}>R$ {dado.valor}</Text>
+                <Text style={styles.valor}>
+                    {dado.tipo === 1 ? `R$ ${dado.valor}` : `R$ -${dado.valor}`}</Text>
             </View>
         </TouchableOpacity>
     );
