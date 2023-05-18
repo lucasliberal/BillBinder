@@ -1,4 +1,4 @@
-import {} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -7,7 +7,7 @@ export default function Movimentacoes( {dado} ){
         <TouchableOpacity style={styles.item} activeOpacity={0.5}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <AntDesign name="checkcircleo" size={20} color="#318E22" style={styles.iconeCheck}/>
+                    <AntDesign name="checkcircleo" size={20} color="#318E22"/>
                     <View style={{flexDirection: 'column', marginStart: 12}}>
                         <View style={{flexDirection: 'row', marginBottom:4, alignItems:'baseline'}}>
                             {dado.tipo == 1 ? <Text style={[styles.titulo, {color:"#318E22"}]}>Recebido </Text> : <Text style={[styles.titulo, {color:"#C32020"}]}>Pago </Text> }

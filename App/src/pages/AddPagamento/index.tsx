@@ -1,4 +1,4 @@
-import {} from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BarraSuperior from '../../components/BarraSuperior';
@@ -14,7 +14,7 @@ export default function AddPagamento(){
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={styles.conteudo}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <InputBox2 titulo="Data de vencimento *" placeholder={"Selecione a data de vencimento"}/>
+                    <InputBox2 titulo="Data de vencimento *" tamanho={'100%'}placeholder={"Selecione a data de vencimento"}/>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <InputBox2 titulo="Tipo *" tamanho={130} placeholder={"A receber"}/>
                         <View style={{flexDirection:'row', alignItems: 'center'}}>
@@ -25,9 +25,9 @@ export default function AddPagamento(){
                             
                         </View>
                     </View>
-                    <InputBox2 titulo="Descrição *" placeholder={"Digite a descrição"}/>
-                    <InputBox2 titulo="Linha digitável" placeholder={"00000.00000.00000 000000.00000.000000 0 00000000000000"}/>
-                    <InputBox2 titulo="Boleto" placeholder={"Selecione o boleto"}/>
+                    <InputBox2 titulo="Descrição *" tamanho={'100%'} placeholder={"Digite a descrição"}/>
+                    <InputBox2 titulo="Linha digitável" tamanho={'100%'} placeholder={"00000.00000.00000 000000.00000.000000 0 00000000000000"}/>
+                    <InputBox2 titulo="Boleto" tamanho={'100%'} placeholder={"Selecione o boleto"}/>
                     
                     <TouchableOpacity style={styles.btn} activeOpacity={0.8}>
                         <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Adicionar</Text>

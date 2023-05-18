@@ -1,5 +1,5 @@
-import {} from 'react';
-import { TouchableOpacity, Text, StyleSheet, onPress } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export function Botao1(){
     return(

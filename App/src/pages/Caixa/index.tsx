@@ -1,4 +1,4 @@
-import {} from 'react';
+import React from 'react';
 import {StyleSheet, StatusBar, Dimensions, View, Text, FlatList} from 'react-native';
 import BarraSuperior from '../../components/BarraSuperior';
 import PeriodoMenu from '../../components/PeriodoMenu';

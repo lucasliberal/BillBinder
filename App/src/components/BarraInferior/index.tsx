@@ -1,11 +1,11 @@
-import {} from 'react';
+import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5, Entypo, Feather, MaterialIcons } from '@expo/vector-icons';
 
 export default function BarraInferior(botaoAtivo){
     var valor = botaoAtivo.valor.toLowerCase();
     return (
-        <View style={styles.container}>
+        <View>
             <View style={styles.menu}>
                 <TouchableOpacity style={[styles.btn, valor == 'menu' ?  styles.btnAtivo : null]}>
                     <Feather name="menu" size={18} color="#14423C" />

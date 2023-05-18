@@ -1,4 +1,4 @@
-import { } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
@@ -7,11 +7,11 @@ export default function PeriodoMenu() {
     return(
         <View style={styles.container}>
             <View style={styles.periodo}>
-                <View style={styles.inicio}>
+                <View>
                     <Text style={styles.texto}>De:</Text>
                     <TextInput style={styles.campoData} placeholder='dd/mm/aaaa'></TextInput>
                 </View>
-                <View style={styles.fim}>
+                <View>
                     <Text style={styles.texto}>Até:</Text>
                     <TextInput style={styles.campoData} placeholder='dd/mm/aaaa'></TextInput>
                 </View>

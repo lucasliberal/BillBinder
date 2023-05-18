@@ -1,4 +1,4 @@
-import {} from 'react';
+import React from 'react';
 import { View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 import {Botao1, Botao2} from '../../components/Botao';
 import { InputBox1 } from '../../components/InputBox';
@@ -9,8 +9,8 @@ export function Login() {
       <View style={styles.container}>
         <Image style={styles.logo} source={require('../../../assets/icon.png')}/>
         
-        <View style={styles.formulario}>
-          <InputBox1 placeholder='Digite aqui seu e-mail'/>
+        <View>
+          <InputBox1 placeholder='Digite aqui seu e-mail' password={false}/>
           <InputBox1 placeholder='Digite aqui sua senha' password={true}/>
           <Botao1/>
         </View>

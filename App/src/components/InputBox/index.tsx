@@ -1,4 +1,4 @@
-import {} from 'react';
+import React from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 export function InputBox1({placeholder, password}){
