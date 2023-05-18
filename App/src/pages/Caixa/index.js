@@ -1,9 +1,9 @@
 import {} from 'react';
 import {StyleSheet, StatusBar, Dimensions, View, Text, FlatList} from 'react-native';
-import BarraSuperior from '../../components/barraSuperior';
+import BarraSuperior from '../../components/BarraSuperior';
 import PeriodoMenu from '../../components/PeriodoMenu';
-import BarraInferior from '../../components/barraInferior';
-import Movimentacoes from '../../components/movimentacoes';
+import BarraInferior from '../../components/BarraInferior';
+import Movimentacoes from '../../components/Movimentacoes';
 
 
 const list = [

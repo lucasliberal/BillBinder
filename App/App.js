@@ -1,4 +1,4 @@
-import Login from './src/pages/Login';
+import {Login} from './src/pages/Login';
 import Caixa from './src/pages/Caixa';
 import AddPagamento from './src/pages/AddPagamento';
 import {} from 'react';
@@ -8,9 +8,8 @@ export default function App (){
   return (
     <View style={styles.container}>
       <StatusBar/>
-      <Caixa/>
+      <Login/>
     </View>
-  
   );
 }
 

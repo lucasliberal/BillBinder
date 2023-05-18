@@ -13,7 +13,6 @@ export default function Movimentacoes( {dado} ){
                             {dado.tipo == 1 ? <Text style={[styles.titulo, {color:"#318E22"}]}>Recebido </Text> : <Text style={[styles.titulo, {color:"#C32020"}]}>Pago </Text> }
                             <Text style={styles.data}>em {dado.db}</Text>
                         </View>
-                        
                         <Text style={styles.descricao}>{dado.descricao}</Text>
                     </View>
                 </View>
