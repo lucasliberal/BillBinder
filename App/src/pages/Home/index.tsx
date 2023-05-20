@@ -1,10 +1,7 @@
 import React from 'react';
-import {StyleSheet, StatusBar, Dimensions, View, Text, FlatList} from 'react-native';
-import BarraSuperior from '../../components/BarraSuperior';
-import PeriodoMenu from '../../components/PeriodoMenu';
-import BarraInferior from '../../components/BarraInferior';
-import Movimentacoes from '../../components/Movimentacoes';
-
+import { StyleSheet, StatusBar, View, FlatList } from 'react-native';
+import { PeriodFilter } from '../../components/Filter';
+import { ListItem } from '../../components/List';
 
 const list = [
     {
@@ -89,20 +86,18 @@ const list = [
     }
 ]
 
-export default function Caixa() {
+export default function Home() {
     return(
         <View style={styles.container}>
             <StatusBar/>
-            <BarraSuperior titulo="Caixa"/>
-            <PeriodoMenu/>
+            <PeriodFilter/>
             <FlatList
                 style={styles.conteudo}
                 data={list}
                 keyExtractor={ (item) => String(item.id)}
                 showsVerticalScrollIndicator={true}
-                renderItem={({ item }) => <Movimentacoes dado={item}/>}
+                renderItem={({ item }) => <ListItem data={item}/>}
             />
-            <BarraInferior style={{justifyContent: 'flex-end'}} valor="caixa"/>
         </View>
     );
 }

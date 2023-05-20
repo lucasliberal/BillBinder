@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 
-export default function PeriodoMenu() {
+export default function PeriodFilter() {
     return(
         <View style={styles.container}>
             <View style={styles.periodo}>

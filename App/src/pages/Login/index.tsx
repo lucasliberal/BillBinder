@@ -1,23 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
-import {Botao1, Botao2} from '../../components/Botao';
-import { InputBox1 } from '../../components/InputBox';
+import {Button_PRIMARY, Button_SECONDARY} from '../../components/Form/Button';
+import { TextInput_PRIMARY, TextInput_SECONDARY } from '../../components/Form/TextInput';
 import { AntDesign } from '@expo/vector-icons';
 
-export function Login() {
+export default function Login({navigation}) {
+    const [username, setUsername] = useState(''); 
+    const [password, setPassword] = useState(''); 
+
     return (
       <View style={styles.container}>
         <Image style={styles.logo} source={require('../../../assets/icon.png')}/>
         
         <View>
-          <InputBox1 placeholder='Digite aqui seu e-mail' password={false}/>
-          <InputBox1 placeholder='Digite aqui sua senha' password={true}/>
-          <Botao1/>
+          <TextInput_PRIMARY 
+            placeholder='Digite aqui seu e-mail'
+            type='text'
+            value={username}
+            setValue={setUsername}
+          />
+          <TextInput_PRIMARY
+            placeholder='Digite aqui sua senha'
+            type='password'
+            value={password}
+            setValue={setPassword}
+            />
+          <Button_PRIMARY onPress={() => navigation.navigate('HomeScreen')} text={"Entrar"}/>
         </View>
 
         <View style = {styles.btn}>
-          <Botao2 text="Cadastre-se"/>
-          <Botao2 text="Esqueci a senha"/>
+          <Button_SECONDARY onPress={''} text="Cadastre-se"/>
+          <Button_SECONDARY onPress={''} text="Esqueci a senha"/>
         </View>
 
         <View style = {styles.divisor}>

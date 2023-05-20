@@ -6,7 +6,7 @@ var statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 44;
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
 
-export default function BarraSuperior({titulo}) {
+export default function TopBar({titulo}) {
     return (
         <View style={styles.container}>
             <Image style={styles.imgLogo} source={(require('../../../assets/icon-transparent.png'))}></Image>

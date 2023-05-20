@@ -1,17 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-export function Botao1(){
+export function Button_PRIMARY({text, onPress}){
     return(
-      <TouchableOpacity activeOpacity={0.8} style={styles.btn1}>
-        <Text style={styles.txt_btn}>Entrar</Text>
+      <TouchableOpacity activeOpacity={0.8} style={styles.btn1} onPress={onPress}>
+        <Text style={styles.txt_btn}>{text}</Text>
       </TouchableOpacity>
     );
   }
 
-export function Botao2({text}){
+export function Button_SECONDARY({text, onPress}){
     return(
-    <TouchableOpacity style={styles.btn2}>
+    <TouchableOpacity style={styles.btn2} onPress={onPress}>
         <Text style={{color: 'white'}}>{text}</Text>
     </TouchableOpacity>
     );

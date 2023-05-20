@@ -2,8 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5, Entypo, Feather, MaterialIcons } from '@expo/vector-icons';
 
-export default function BarraInferior(botaoAtivo){
-    var valor = botaoAtivo.valor.toLowerCase();
+export default function BottomBar(botaoAtivo){
+    var valor = valor ? botaoAtivo.valor.toLowerCase() : 'Home';
     return (
         <View>
             <View style={styles.menu}>
@@ -11,9 +11,9 @@ export default function BarraInferior(botaoAtivo){
                     <Feather name="menu" size={18} color="#14423C" />
                     <Text style={styles.txt}>Menu</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.btn, valor == 'caixa' ?  styles.btnAtivo : null]}>
+                <TouchableOpacity style={[styles.btn, valor == 'Home' ?  styles.btnAtivo : null]}>
                     <FontAwesome5 name="cash-register" size={18} color="#14423C" />
-                    <Text style={styles.txt}>Caixa</Text>
+                    <Text style={styles.txt}>Home</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.btn, valor == 'adicionar' ?  styles.btnAtivo : null]}>
                 <Entypo name="add-to-list" size={18} color="#14423C" />
