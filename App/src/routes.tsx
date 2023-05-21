@@ -4,18 +4,21 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesome5, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import { getHeaderTitle } from "@react-navigation/elements";
 
-import { Login, Menu, Home, AddBill, ToBePaid, ToBeReceived} from "./pages" ;
+import { Login, Menu, Caixa, AddBill, ToBePaid, ToBeReceived, BillInformation} from "./pages" ;
 
 import { TopBar } from "./components/Bar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const Stack2 = createNativeStackNavigator();
 
 export function Routes(){
     return(
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='Login' component={Login}/>
             <Stack.Screen name='HomeScreen' component={HomeScreen}/>
+            <Stack.Screen name='BillInformation' component={BillInformation}
+            options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}} />
         </Stack.Navigator>
     );
 }
@@ -61,10 +64,10 @@ export function HomeScreen(){
                 )
             }}/>
 
-            <Tab.Screen name="Home"
-            component={Home}
+            <Tab.Screen name="Caixa"
+            component={Caixa}
             options={{
-                tabBarLabel: 'Home'.toUpperCase(),
+                tabBarLabel: 'Caixa'.toUpperCase(),
                 tabBarIcon: ({color}) => (
                     <FontAwesome5 name="cash-register" size={20} color={color} />
                 )
@@ -99,3 +102,4 @@ export function HomeScreen(){
         </Tab.Navigator>
     );
 }
+

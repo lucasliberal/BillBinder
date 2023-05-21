@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import { View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableOpacity, StatusBar} from 'react-native';
 import {Button_PRIMARY, Button_SECONDARY} from '../../components/Form/Button';
 import { TextInput_PRIMARY, TextInput_SECONDARY } from '../../components/Form/TextInput';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function Login({navigation}) {
     const [username, setUsername] = useState(''); 
-    const [password, setPassword] = useState(''); 
+    const [password, setPassword] = useState('');
 
     return (
       <View style={styles.container}>
+        <StatusBar/>
         <Image style={styles.logo} source={require('../../../assets/icon.png')}/>
         
         <View>

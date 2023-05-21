@@ -2,22 +2,30 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function ListItem( {data} ){
+export default function ListItem( {data, onPress} ){
+    const title = data.tipo === 0 && data.situacao === 1 ? 'Pago' :
+                    data.tipo === 0 && data.situacao === 0 ? 'A pagar' :
+                    data.tipo === 1 && data.situacao === 1 ? 'Recebido' : 'A receber';
+
     return (
-        <TouchableOpacity style={styles.item} activeOpacity={0.5}>
+        <TouchableOpacity style={styles.item} activeOpacity={0.5} onPress={onPress}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <AntDesign name="checkcircleo" size={20} color="#318E22"/>
+                    {/* {data.situacao == 1 ? <AntDesign name="checkcircleo" color='#318E22' size={20}/> :
+                    <AntDesign name="closecircleo" size={20} color='rgba(0, 0, 0, 0.2)'/>} */}
                     <View style={{flexDirection: 'column', marginStart: 12}}>
                         <View style={{flexDirection: 'row', marginBottom:4, alignItems:'baseline'}}>
-                            {data.tipo == 1 ? <Text style={[styles.titulo, {color:"#318E22"}]}>Recebido </Text> : <Text style={[styles.titulo, {color:"#C32020"}]}>Pago </Text> }
-                            <Text style={styles.data}>em {data.db}</Text>
+                        <Text style={[styles.titulo, data.tipo === 1 ? {color:"#318E22"} : {color:"#C32020"}]}>{title} </Text>
+                            <Text style={styles.data}>{data.situacao === 1 ? `em ${data.db}` : `até ${data.dv}` }</Text>
                         </View>
                         <Text style={styles.descricao}>{data.descricao}</Text>
                     </View>
                 </View>
                 <Text style={styles.valor}>
-                    {data.tipo === 1 ? `R$ ${data.valor}` : `R$ -${data.valor}`}</Text>
+                    {data.tipo === 1 ?
+                        `+ R$ ${data.valor}` :
+                        `- R$ ${data.valor}`}
+                </Text>
             </View>
         </TouchableOpacity>
     );
@@ -45,7 +53,6 @@ const styles  = StyleSheet.create({
     },
     valor:{
         fontSize: 16,
-        fontWeight: 'bold'
     },
     descricao:{
         fontSize: 16,

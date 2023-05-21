@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Header from '../../components/Bar/TopBar';
-import BottomBar from '../../components/Bar/BottomBar';
-import {TextInput_SECONDARY} from '../../components/Form/TextInput'
+import Header from '../../../components/Bar/TopBar';
+import BottomBar from '../../../components/Bar/BottomBar';
+import {TextInput_SECONDARY} from '../../../components/Form/TextInput'
 
-export default function AddBill(){
+export default function BillInformation(){
     const [value, setValue] = useState(''); 
 
     return(
@@ -31,7 +31,10 @@ export default function AddBill(){
                     <TextInput_SECONDARY title="Boleto" tamanho={'100%'} placeholder={"Selecione o boleto"} type={"Text"} value={value} setValue={setValue}/>
                     
                     <TouchableOpacity style={styles.btn} activeOpacity={0.8}>
-                        <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Adicionar</Text>
+                        <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Editar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btn} activeOpacity={0.8}>
+                        <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Voltar</Text>
                     </TouchableOpacity>
 
                 </ScrollView>
