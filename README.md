@@ -11,7 +11,7 @@
   
 <h2>Como rodar</h2>
 <ol>
-  <li>Acessar diretório App</li>
+  <li>Acessar diretório <a href="https://github.com/lucasliberal/BillBinder/tree/main/App"><i>App</i></a></li>
   <li>Executar o comando <u><i>npm install</i></u> para instalar todas as dependências</li>
   <li>Executar o comando <u><i>npx expo start</i></u> para rodar a aplicação</li>
 </ol>
