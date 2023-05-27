@@ -1,9 +1,9 @@
-import AddBill from "./HomeScreen/AddBill";
-import Caixa from "./HomeScreen/Caixa";
-import Login from "./LoginScreen";
-import Menu from "./HomeScreen/Menu";
-import ToBePaid from "./HomeScreen/ToBePaid";
-import ToBeReceived from "./HomeScreen/ToBeReceived";
-import BillInformation from "./HomeScreen/BillInformation";
+import AddBill from "./Dashboard/AddBill";
+import Caixa from "./Dashboard/Caixa";
+import Login from "./Authentication";
+import Menu from "./Dashboard/Menu";
+import ToBePaid from "./Dashboard/ToBePaid";
+import ToBeReceived from "./Dashboard/ToBeReceived";
+import BillInformation from "./Dashboard/BillInformation";
 
 export { AddBill, Caixa, Login, Menu, ToBePaid, ToBeReceived, BillInformation };

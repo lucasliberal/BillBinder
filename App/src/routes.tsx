@@ -16,17 +16,18 @@ export function Routes(){
     return(
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='Login' component={Login}/>
-            <Stack.Screen name='HomeScreen' component={HomeScreen}/>
+            <Stack.Screen name='Dashboard' component={Dashboard}/>
             <Stack.Screen name='BillInformation' component={BillInformation}
             options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}} />
         </Stack.Navigator>
     );
 }
 
-export function HomeScreen(){
+export function Dashboard(){
     return(
         <Tab.Navigator
         screenOptions={{
+            tabBarHideOnKeyboard: true,
             header:({navigation, route, options}) => {
                 const titulo = getHeaderTitle(options, route.name);
                 return(

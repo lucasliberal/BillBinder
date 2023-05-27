@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, StatusBar, View, FlatList } from 'react-native';
 import { PeriodFilter } from '../../../components/Filter';
 import { ListItem } from '../../../components/List';
-import styles from '../style';
+import styles_global from '../../style';
 
 const list = [
     {
@@ -29,11 +29,10 @@ const list = [
 
 export default function ToBePaid() {
     return(
-        <View style={styles.container}>
+        <View style={styles_global.container}>
             {/* <StatusBar/> */}
             <PeriodFilter/>
             <FlatList
-                style={styles.conteudo}
                 data={list}
                 keyExtractor={ (item) => String(item.id)}
                 showsVerticalScrollIndicator={true}
