@@ -18,7 +18,7 @@ export function Routes(){
             <Stack.Screen name='Login' component={Login}/>
             <Stack.Screen name='Dashboard' component={Dashboard}/>
             <Stack.Screen name='BillInformation' component={BillInformation}
-            options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}} />
+            options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}}/>
         </Stack.Navigator>
     );
 }
