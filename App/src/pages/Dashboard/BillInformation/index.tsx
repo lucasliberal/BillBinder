@@ -1,33 +1,50 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 import styles_global from '../../style';
 
 export default function BillInformation({navigation, route}){
-    //console.log(route.params.item.id);
 
     const [dv, setDv] = useState(route.params.item.dv);
     const [type, setType] = useState(route.params.item.type);
-
     const [category, setCategory] = useState(route.params.item.category);
     const [description, setDescription] = useState(route.params.item.description);
-    //const [digitableLine, setDigitableLine] = useState('');
-    const [paymentSlip, setPaymentSlip] = useState(''); //boleto
-
-    const [digitableLine, setDigitableLine] = useState(['12345', '67890', '12345', '678901', '12345', '678901', '1', '12345678901234']);
+    const [digitableLine, setDigitableLine] = useState('');
+    const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
+    const [paymentReceiptUri, setPaymentReceiptUri] = useState(''); //comprovante endereço
+    
+    const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
+    const [paymentReceiptName, setPaymentReceiptName] = useState(''); //comprovante endereço
 
     const [editable, setEditable] = useState(false);
 
-    function changeEditableMode(){
+    function changeEditableMode() {
         return setEditable(!editable);
     }
 
-    function submitChanges(){
+    const submitChanges = () => {
         Alert.alert('Informações atualizadas com sucesso!');
         changeEditableMode();
         //navigation.pop();
+    }
+
+    const pickPaymentSlip = async () => {
+        let result = await DocumentPicker.getDocumentAsync({});
+        // @ts-ignore
+        setPaymentSlipUri(result.uri);
+        // @ts-ignore
+        setPaymentSlipName(result.name);
+    }
+
+    const pickPaymentReceipt = async () => {
+        let result = await DocumentPicker.getDocumentAsync({});
+        // @ts-ignore
+        setPaymentReceiptUri(result.uri);
+        // @ts-ignore
+        setPaymentReceiptName(result.name);
     }
 
     return(
@@ -58,7 +75,6 @@ export default function BillInformation({navigation, route}){
                                         <Picker.Item label='Pagar' value={0}/>
                                 </Picker>
                             </View>
-                            
                         </View>
                        
                         <View style={{flexDirection:'row', alignItems: 'center'}}>
@@ -90,7 +106,7 @@ export default function BillInformation({navigation, route}){
                     <Text style={styles_global.txt_inputTitle}>Descrição*</Text>
                     <TextInput value={description} onChangeText={setDescription} style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]} placeholder='Digite a descrição' placeholderTextColor={'black'} editable={editable}/>
 
-                    {/** Linha digitável */}
+                    <>{/* Linha digitável modelo 2
                     <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
                     <View style={{rowGap: 12, marginBottom: 16}}>
                         <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
@@ -156,44 +172,72 @@ export default function BillInformation({navigation, route}){
                             />
                         </View>
 
-                    </View>
+                    </View> */}</>
 
+                    {/** Linha digitável */}
+                    <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
+                    <TextInput value={digitableLine} onChangeText={setDigitableLine}
+                    style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width: '100%', height: 55}]}
+                    placeholder='Digite a linha digitável' placeholderTextColor={'black'}
+                    multiline={true}
+                    numberOfLines={2}
+                    maxLength={48}
+                    editable={editable}
+                    />
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <View>
                             {/** Boleto */}
                             <Text style={styles_global.txt_inputTitle}>Boleto</Text>
-                            <TextInput value={paymentSlip} onChangeText={setPaymentSlip} style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width: 140, height: 60}]} placeholder='Selecione...' placeholderTextColor={'black'} editable={editable}/>
+                            {paymentSlipUri ?
+                            <TouchableOpacity onPress={() => alert('Abrir documento')} style={[editable ? styles_global.btn_upload : styles_global.btn_upload_alternativo]} disabled={!editable}>
+                                <View style={{flexDirection: 'row', gap: 5}}>
+                                    <AntDesign name="file1" size={20} color="#14423C" />
+                                    <Text style={{width: 100}} numberOfLines={1}>{paymentSlipName}</Text>
+                                </View>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={pickPaymentSlip} style={[editable ? styles_global.btn_upload : styles_global.btn_upload_alternativo]} disabled={!editable}>
+                                <View style={{flexDirection: 'row', gap: 5}}>
+                                    <AntDesign name="upload" size={20} color="#14423C" />
+                                    <Text>Enviar</Text>
+                                </View>
+                            </TouchableOpacity>}
                         </View>
                         <View>
                             {/** Comprovante */}
                             <Text style={styles_global.txt_inputTitle}>Comprovante</Text>
-                            <TextInput value={paymentSlip} onChangeText={setPaymentSlip} style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:140, height: 60}]} placeholder='Selecione...' placeholderTextColor={'black'} editable={editable}/>
+                            {paymentReceiptUri ?
+                            <TouchableOpacity onPress={() => alert('Abrir documento')} style={[editable ? styles_global.btn_upload : styles_global.btn_upload_alternativo]} disabled={!editable}>
+                                <View style={{flexDirection: 'row', gap: 5}}>
+                                    <AntDesign name="file1" size={20} color="#14423C" />
+                                    <Text style={{width: 100}} numberOfLines={1}>{paymentSlipName}</Text>
+                                </View>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={pickPaymentReceipt} style={[editable ? styles_global.btn_upload : styles_global.btn_upload_alternativo]} disabled={!editable}>
+                                <View style={{flexDirection: 'row', gap: 5}}>
+                                    <AntDesign name="upload" size={20} color="#14423C" />
+                                    <Text>Enviar</Text>
+                                </View>
+                            </TouchableOpacity>}
                         </View>
                     </View>
         
-
-                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         {editable ? 
                             /** Botão Salvar */
-                            <TouchableOpacity style={[styles_global.btn1, {width: 130}]} activeOpacity={0.8} onPress={submitChanges}>
+                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={submitChanges}>
                                 <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Salvar</Text>
                             </TouchableOpacity> :
                             /** Botão Editar */
-                            <TouchableOpacity style={[styles_global.btn1, {width: 130}]} activeOpacity={0.8} onPress={changeEditableMode}>
+                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={changeEditableMode}>
                                 <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Editar</Text>
                             </TouchableOpacity>
                         }
                         {/** Botão voltar */}
-                            <TouchableOpacity style={[styles_global.btn2, {width: 130}]} activeOpacity={0.8} onPress={() => navigation.pop()}>
+                            <TouchableOpacity style={[styles_global.btn2, {width: 150}]} activeOpacity={0.8} onPress={() => navigation.pop()}>
                                 <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Voltar</Text>
                             </TouchableOpacity>
-                    </View>
-                    
-
-                    
-
-                    
+                    </View>                    
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>

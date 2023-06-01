@@ -8,22 +8,24 @@ const styles_global = StyleSheet.create({
 
     //TEXT INPUT
     txt_input:{
-      height: 33,
+      height: 40,
       borderColor: "#14423C",
-      borderWidth: 1,
+      borderWidth: 2,
       paddingLeft: 14,
       marginBottom: 16,
       fontSize: 16,
+      borderRadius: 5
     },
     txt_input_alternative:{
       color: 'black',
       flexDirection: 'row',
-      height: 34,
+      height: 40,
       borderColor: "rgba(20, 66, 60, 0.2)",
-      borderWidth:1,
+      borderWidth:2,
       paddingLeft: 14,
       marginBottom: 16,
       fontSize: 16,
+      borderRadius: 5
     },
     txt_inputTitle:{
       color: '#14423C',
@@ -49,29 +51,31 @@ const styles_global = StyleSheet.create({
       paddingLeft:0,
       width: 95.5,
       textAlign: 'center',
-      marginBottom: 2
+      marginBottom: 2,
     },
     select_input_container:{
-      height: 34,
-      borderWidth: 1,
+      height: 40,
+      borderWidth: 2,
       borderColor: '#14423C',
       marginBottom: 16,
+      borderRadius: 5
     },
     select_input:{
-      height: 34,
+      height: 40,
       top:-10,
       borderColor: "#14423C",
       color:'black',
     },
     select_input_container_alternative:{
-      height: 34,
+      height: 40,
       borderColor: "rgba(20, 66, 60, 0.2)",
-      borderWidth: 1,
+      borderWidth: 2,
       marginBottom: 16,
+      borderRadius: 5
     },
     select_input_alternative:{
-      height: 34,
-      top: -12,
+      height: 40,
+      top: -10,
     },
     //BUTTON
     btn_login1:{
@@ -109,6 +113,28 @@ const styles_global = StyleSheet.create({
       borderRadius: 5,
       alignSelf: 'center',
       marginTop: 20,
+    },
+    btn_upload:{
+      backgroundColor: '#E7E7E7',
+      width: 140,
+      height: 45,
+      borderRadius: 5,
+      borderColor: '#14423C',
+      borderWidth: 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: '#14423C'
+    },
+    btn_upload_alternativo:{
+      backgroundColor: '#E7E7E7',
+      width: 140,
+      height: 45,
+      borderRadius: 5,
+      borderColor: 'rgba(20, 66, 60, 0.2)',
+      borderWidth: 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: '#14423C'
     }
 });
 

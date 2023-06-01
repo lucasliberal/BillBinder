@@ -27,7 +27,7 @@ const list = [
     },
 ]
 
-export default function ToBePaid() {
+export default function ToBePaid({navigation}) {
     return(
         <View style={styles_global.container}>
             {/* <StatusBar/> */}
@@ -36,7 +36,19 @@ export default function ToBePaid() {
                 data={list}
                 keyExtractor={ (item) => String(item.id)}
                 showsVerticalScrollIndicator={true}
-                renderItem={({ item }) => <ListItem data={item} onPress={null}/>}
+                renderItem={({ item }) => <ListItem data={item}
+                onPress={() => navigation.navigate('BillInformation', {
+                    item: {
+                        id:item.id, 
+                        description:item.descricao,
+                        value: item.valor,
+                        type: item.tipo,
+                        situation: item.situacao,
+                        dv: item.dv, 
+                        db: item.db,
+                        category: item.categoria
+                    }})
+                }/>}
             />
         </View>
     );

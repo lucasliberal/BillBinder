@@ -1,15 +1,30 @@
-import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Button} from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
-
 export default function PeriodFilter() {
+    const [date, setDate] = useState(new Date());
+    const [open, setOpen] = useState(false);
+
     return(
         <View style={styles.container}>
             <View style={styles.periodo}>
                 <View>
                     <Text style={styles.texto}>De:</Text>
                     <TextInput style={styles.campoData} placeholder='dd/mm/aaaa'></TextInput>
+                    {/* <Button title='Open' onPress={() =>  setOpen(true)}/>
+                    <DatePicker
+                        modal
+                        open={open}
+                        date={date}
+                        onConfirm={(date) => {
+                            setOpen(false)
+                            setDate(date)
+                        }}
+                        onCancel={() => {
+                            setOpen(false)
+                        }}
+                    /> */}
                 </View>
                 <View>
                     <Text style={styles.texto}>Até:</Text>

@@ -1,21 +1,56 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-
+import * as DocumentPicker from 'expo-document-picker';
 import styles_global from '../../style';
 
 export default function AddBill(){
-    const [date, setDate] = useState('');
-    const [type, setType] = useState('');
-    const [category, setCategory] = useState('');
-    const [description, setDescription] = useState('');
-    const [digitableLine, setDigitableLine] = useState([null, null, null, null, null, null, null]);
-    const [paymentSlip, setPaymentSlip] = useState(''); //boleto
+    const [date, setDate] = useState(null); //data
+    const [type, setType] = useState(0); //tipo
+    const [category, setCategory] = useState(null); //categoria
+    const [description, setDescription] = useState(null); //descrição
+    const [digitableLine, setDigitableLine] = useState(null); //linha digitável
+    const [paymentSlipUri, setPaymentSlipUri] = useState(null); //boleto endereço
+    const [paymentSlipName, setPaymentSlipName] = useState(null); //boleto nome
 
+    const pickPaymentSlip = async () => {
+        let result = await DocumentPicker.getDocumentAsync({});
+        // @ts-ignore
+        setPaymentSlipUri(result.uri);
+        // @ts-ignore
+        setPaymentSlipName(result.name);
+    }
 
-    function digitableLinePrint(){
-        console.log(digitableLine[0]+'.'+digitableLine[1]+' '+digitableLine[2]+'.'+digitableLine[3]+' '+digitableLine[4]+'.'+digitableLine[5]+' '+digitableLine[6]+' '+digitableLine[7]);
+    const requiredInput = () => {
+        if(this.state.text.trim() === "") {
+            this.setState(() => ({inputError: 'Preencha todos os campos'}))
+        }else {
+            this.setState(() => ({inputError: null}))
+        }
+    }
+
+    const submit = () => {
+        //verifica se os campos obrigatórios estão preenchidos
+        if((date && category && description)){
+            alert('Formulário submetido');
+            console.log('Data: ' + date);
+            console.log('Tipo ID: ' + type);
+            console.log('Categoria: ' + category);
+            console.log('Descrição: ' + description);
+            // console.log('Linha digitável: ' + digitableLine);
+            // console.log('Boleto URL: ' + paymentSlipUri);
+        }
+        else{
+            alert('Preencha todos os campos!');
+            console.log('Data: ' + date);
+            console.log('Tipo ID: ' + type);
+            console.log('Categoria: ' + category);
+            console.log('Descrição: ' + description);
+            // console.log('Linha digitável: ' + digitableLine);
+            // console.log('Boleto URL: ' + paymentSlipUri);
+        }
+        
     }
 
     return(
@@ -28,7 +63,7 @@ export default function AddBill(){
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {/** Data de vencimento */}
                     <Text style={styles_global.txt_inputTitle}>Data de vencimento*</Text>
-                    <TextInput value={date} onChangeText={setDate} style={[styles_global.txt_input, {width:'100%'}]} placeholder='Selecione a data de vencimento' placeholderTextColor={'black'}/>
+                    <TextInput onChangeText={setDate} style={[styles_global.txt_input, {width:'100%'}]} placeholder='Selecione a data de vencimento' placeholderTextColor={'black'}/>
                     
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         {/** Tipo */}
@@ -41,8 +76,8 @@ export default function AddBill(){
                                     setType(itemValue)}
                                 style={[styles_global.select_input, {width: 140}]}
                                 dropdownIconColor={'#14423C'}>
-                                    <Picker.Item label='Receber' value={1} />
                                     <Picker.Item label='Pagar' value={0}/>
+                                    <Picker.Item label='Receber' value={1} />
                                 </Picker>
                             </View>
                         </View>
@@ -51,7 +86,6 @@ export default function AddBill(){
                             {/** Categoria */}
                             <View>
                                 <Text style={styles_global.txt_inputTitle}>Categoria*</Text>
-                                {/* <TextInput value={category} onChangeText={setCategory} style={[styles_global.txt_input, {width:140}]} placeholder='Selecione' placeholderTextColor={'black'}/> */}
                                 <View style={styles_global.select_input_container}>
                                     <Picker                    
                                     selectedValue={category}
@@ -59,115 +93,48 @@ export default function AddBill(){
                                         setCategory(itemValue)}
                                     style={[styles_global.select_input, {width: 140}]}
                                     dropdownIconColor={'#14423C'}>
+                                        <Picker.Item label='Selecione...' value={null} />
                                         <Picker.Item label='Energia' value={'energia'} />
                                         <Picker.Item label='Internet' value={'internet'}/>
                                         <Picker.Item label='Salário' value={'salario'}/>
                                     </Picker>
                                 </View>
                             </View>
-                            {/* * Add categoria
-                            <TouchableOpacity activeOpacity={0.5}>
-                                <Ionicons name="add-circle-outline" size={30} color="#14423C" />
-                            </TouchableOpacity> */}
                         </View>
                     </View>
         
                     {/** Descrição */}
                     <Text style={styles_global.txt_inputTitle}>Descrição*</Text>
-                    <TextInput value={description} onChangeText={setDescription} style={[styles_global.txt_input, {width:'100%'}]} placeholder='Digite a descrição' placeholderTextColor={'black'}/>
+                    <TextInput onChangeText={setDescription} style={[styles_global.txt_input, {width:'100%'}]} placeholder='Digite a descrição' placeholderTextColor={'black'}/>
 
                     {/** Linha digitável */}
                     <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
-                    {/* <TextInput value={digitableLine} onChangeText={setDigitableLine} style={[styles_global.txt_input, {width:'100%'}]} placeholder='00000.00000.00000 000000.00000.000000 0 00000000000000' placeholderTextColor={'black'}/> */}
-                    <View style={{rowGap: 12, marginBottom: 16}}>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[0]}
-                            onChangeText={setDigitableLine[0]}
-                            placeholder='00000'
-                            placeholderTextColor='black'
-
-                            />
-                            <TextInput 
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[1]}
-                            onChangeText={setDigitableLine[1]}
-                            placeholder='00000'
-                            placeholderTextColor='black'
-                            />
-                            <TextInput
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[2]}
-                            onChangeText={setDigitableLine[2]}
-                            placeholder='00000'
-                            placeholderTextColor='black'
-                            />
-                        </View>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={6}
-                            keyboardType='numeric'
-                            value={digitableLine[3]}
-                            onChangeText={setDigitableLine[3]}
-                            placeholder='000000'
-                            placeholderTextColor='black'
-                            />
-                            <TextInput
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[4]}
-                            onChangeText={setDigitableLine[4]}
-                            placeholder='00000'
-                            placeholderTextColor='black'
-                            />
-                            <TextInput
-                            style={[styles_global.txt_input, styles_global.txt_input_digitableLine]}
-                            maxLength={6}
-                            keyboardType='numeric'
-                            value={digitableLine[5]}
-                            onChangeText={setDigitableLine[5]}
-                            placeholder='000000'
-                            placeholderTextColor='black'
-                            />
-                        </View>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[[styles_global.txt_input, styles_global.txt_input_digitableLine], {width: 60}]}
-                            maxLength={1}
-                            keyboardType='numeric'
-                            value={digitableLine[6]}
-                            onChangeText={setDigitableLine[1]}
-                            placeholder='0'
-                            placeholderTextColor='black'
-                            />
-                            <TextInput
-                            style={[[styles_global.txt_input, styles_global.txt_input_digitableLine], {width: 237}]}
-                            maxLength={14}
-                            keyboardType='numeric'
-                            value={digitableLine[7]}
-                            onChangeText={setDigitableLine[1]}
-                            placeholder='00000000000000'
-                            placeholderTextColor='black'
-                            />
-                        </View>
-
-                    </View>
+                    <TextInput onChangeText={setDigitableLine}
+                    style={[styles_global.txt_input, {height: 55, width:'100%'}]}
+                    placeholder='Digite a linha digitável' placeholderTextColor={'black'}
+                    multiline={true}
+                    numberOfLines={2}
+                    maxLength={48}
+                    />
         
                     {/** Boleto */}
                     <Text style={styles_global.txt_inputTitle}>Boleto</Text>
-                    <TextInput value={paymentSlip} onChangeText={setPaymentSlip} style={[styles_global.txt_input, {width:'100%', height: 60}]} placeholder='Selecione o boleto' placeholderTextColor={'black'}/>
+                    {paymentSlipUri ?
+                    <TouchableOpacity onPress={() => alert('Abrir documento')} style={styles_global.btn_upload}>
+                        <View style={{flexDirection: 'row', gap: 5}}>
+                            <AntDesign name="file1" size={20} color="#14423C" />
+                            <Text style={{width: 100}} numberOfLines={1}>{paymentSlipName}</Text>
+                        </View>
+                    </TouchableOpacity> :
+                    <TouchableOpacity onPress={pickPaymentSlip} style={styles_global.btn_upload}>
+                        <View style={{flexDirection: 'row', gap: 5}}>
+                            <AntDesign name="upload" size={20} color="#14423C" />
+                            <Text>Enviar boleto</Text>
+                        </View>
+                    </TouchableOpacity>}
 
                     {/** Botão adicionar pagamento */}
-                    <TouchableOpacity style={styles_global.btn1} activeOpacity={0.8} onPress={digitableLinePrint}>
+                    <TouchableOpacity style={styles_global.btn1} activeOpacity={0.8} onPress={submit}>
                         <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Adicionar</Text>
                     </TouchableOpacity>
                 </ScrollView>

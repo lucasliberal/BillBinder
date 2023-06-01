@@ -4,7 +4,7 @@ import { ListItem } from "../../../components/List";
 import { PeriodFilter } from "../../../components/Filter";
 import styles_global from '../../style';
 
-export default function ToBeReceived() {
+export default function ToBeReceived({navigation}) {
 
     const list = [
         {
@@ -26,7 +26,19 @@ export default function ToBeReceived() {
             data={list}
             keyExtractor={ (item) => String(item.id)}
             showsVerticalScrollIndicator={true}
-            renderItem={({ item }) => <ListItem data={item} onPress={null}/>}
+            renderItem={({ item }) => <ListItem data={item}
+            onPress={() => navigation.navigate('BillInformation', {
+                item: {
+                    id:item.id, 
+                    description:item.descricao,
+                    value: item.valor,
+                    type: item.tipo,
+                    situation: item.situacao,
+                    dv: item.dv, 
+                    db: item.db,
+                    category: item.categoria
+                }})
+            }/>}
         />
     </View>
     );

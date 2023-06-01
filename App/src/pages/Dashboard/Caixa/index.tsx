@@ -57,18 +57,18 @@ export default function Caixa({navigation}) {
                 keyExtractor={ (item) => String(item.id)}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item }) => <ListItem data={item} 
-                            onPress={() => navigation.navigate('BillInformation', {
-                                item: {
-                                    id:item.id, 
-                                    description:item.descricao,
-                                    value: item.valor,
-                                    type: item.tipo,
-                                    situation: item.situacao,
-                                    dv: item.dv, 
-                                    db: item.db,
-                                    category: item.categoria
-                                }})
-                            }/>}
+                onPress={() => navigation.navigate('BillInformation', {
+                    item: {
+                        id:item.id, 
+                        description:item.descricao,
+                        value: item.valor,
+                        type: item.tipo,
+                        situation: item.situacao,
+                        dv: item.dv, 
+                        db: item.db,
+                        category: item.categoria
+                    }})
+                }/>}
             />
         </View>
     );
