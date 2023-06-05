@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, StatusBar, View, FlatList } from 'react-native';
 import { PeriodFilter } from '../../../components/Filter';
 import { ListItem } from '../../../components/List';
@@ -11,9 +11,10 @@ const list = [
         valor: '540,00',
         tipo: 0, // 1=receber | 0=pagar
         situacao: 0, // 1=cocluido | 0=pendente
-        dv: '19/01/2023', // data de vencimento
+        dv: '2023-01-19', // data de vencimento
         db: '', // data do debito/recebimento
         categoria: 'Energia',
+        status: 0
     },
     {
         id: 2,
@@ -21,17 +22,34 @@ const list = [
         valor: '60,00',
         tipo: 0, // 1=receber | 0=pagar
         situacao: 0, // 1=cocluido | 0=pendente
-        dv: '12/01/2023', // data de vencimento
+        dv: '2023-01-12', // data de vencimento
         db: '', // data do debito/recebimento
         categoria: 'Telefone',
+        status: 0    
     },
 ]
 
 export default function ToBePaid({navigation}) {
+
+    const [initDate, setInitDate] = useState();
+    const [endDate, setEndDate] = useState();
+        
+    const onChangeDate = (initialDate, endingDate) => {
+        setInitDate(initialDate);
+        setEndDate(endingDate);
+    } 
+
+    useEffect(() => {
+        //executa o comando após a seleção do período
+        console.log('********* TELA A PAGAR **********');
+        console.log('De: ' + initDate);
+        console.log('Até: ' + endDate);
+    }), [initDate, endDate];
+
     return(
         <View style={styles_global.container}>
             {/* <StatusBar/> */}
-            <PeriodFilter/>
+            <PeriodFilter onChangeDate={onChangeDate}/>
             <FlatList
                 data={list}
                 keyExtractor={ (item) => String(item.id)}
@@ -46,7 +64,8 @@ export default function ToBePaid({navigation}) {
                         situation: item.situacao,
                         dv: item.dv, 
                         db: item.db,
-                        category: item.categoria
+                        category: item.categoria,
+                        status: item.status
                     }})
                 }/>}
             />

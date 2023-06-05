@@ -12,6 +12,7 @@ const styles_global = StyleSheet.create({
       borderColor: "#14423C",
       borderWidth: 2,
       paddingLeft: 14,
+      paddingRight: 14,
       marginBottom: 16,
       fontSize: 16,
       borderRadius: 5

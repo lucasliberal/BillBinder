@@ -1,5 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import format from 'date-fns/format';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function ListItem( {data, onPress} ){
@@ -11,12 +13,10 @@ export default function ListItem( {data, onPress} ){
         <TouchableOpacity style={styles.item} activeOpacity={0.5} onPress={onPress}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    {/* {data.situacao == 1 ? <AntDesign name="checkcircleo" color='#318E22' size={20}/> :
-                    <AntDesign name="closecircleo" size={20} color='rgba(0, 0, 0, 0.2)'/>} */}
                     <View style={{flexDirection: 'column', marginStart: 12}}>
                         <View style={{flexDirection: 'row', marginBottom:4, alignItems:'baseline'}}>
                         <Text style={[styles.titulo, data.tipo === 1 ? {color:"#318E22"} : {color:"#C32020"}]}>{title} </Text>
-                            <Text style={styles.data}>{data.situacao === 1 ? `em ${data.db}` : `até ${data.dv}` }</Text>
+                            <Text style={styles.data}>{data.situacao === 1 ? `em ${format(new Date(data.db), "dd/MM/yyyy")}` : `até ${format(new Date(data.dv), "dd/MM/yyyy")}` }</Text>
                         </View>
                         <Text style={styles.descricao}>{data.descricao}</Text>
                     </View>

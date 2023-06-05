@@ -10,7 +10,6 @@ import { TopBar } from "./components/Bar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-const Stack2 = createNativeStackNavigator();
 
 export function Routes(){
     return(
@@ -74,7 +73,7 @@ export function Dashboard(){
                 )
             }}/>
 
-            <Tab.Screen name="Adicionar pagamento"
+            <Tab.Screen name="Adicionar lançamento"
             component={AddBill}
             options={{
                 tabBarLabel: 'Adicionar'.toUpperCase(),
