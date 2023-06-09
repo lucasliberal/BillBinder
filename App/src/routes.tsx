@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesome5, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import { getHeaderTitle } from "@react-navigation/elements";
 
-import { Login, Menu, Caixa, AddBill, ToBePaid, ToBeReceived, BillInformation} from "./pages" ;
+import { Login, Register, Caixa, AddBill, ToBePaid, ToBeReceived, BillInformation, Menu} from "./pages" ;
 
 import { TopBar } from "./components/Bar";
 
@@ -13,8 +13,9 @@ const Stack = createNativeStackNavigator();
 
 export function Routes(){
     return(
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, fullScreenGestureEnabled:false }}>
             <Stack.Screen name='Login' component={Login}/>
+            <Stack.Screen name='Register' component={Register}/>
             <Stack.Screen name='Dashboard' component={Dashboard}/>
             <Stack.Screen name='BillInformation' component={BillInformation}
             options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}}/>

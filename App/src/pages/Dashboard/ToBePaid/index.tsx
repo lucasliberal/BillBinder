@@ -7,25 +7,25 @@ import styles_global from '../../style';
 const list = [
     {
         id: 1,
-        descricao: 'Energia',
-        valor: '540,00',
-        tipo: 0, // 1=receber | 0=pagar
-        situacao: 0, // 1=cocluido | 0=pendente
-        dv: '2023-01-19', // data de vencimento
-        db: '', // data do debito/recebimento
-        categoria: 'Energia',
-        status: 0
+        user_id: 1,
+        description: 'Energia',
+        value: '540,00',
+        type: 0, // 1=receber | 0=pagar
+        status: 0, // 1=cocluido | 0=pendente
+        expiration_date: '2023-01-19', // data de vencimento
+        debit_date: '', // data do debito/recebimento
+        category: 'Energia',
     },
     {
         id: 2,
-        descricao: 'Telefone',
-        valor: '60,00',
-        tipo: 0, // 1=receber | 0=pagar
-        situacao: 0, // 1=cocluido | 0=pendente
-        dv: '2023-01-12', // data de vencimento
-        db: '', // data do debito/recebimento
-        categoria: 'Telefone',
-        status: 0    
+        user_id: 1,     
+        description: 'Telefone',
+        value: '60,00',
+        type: 0, // 1=receber | 0=pagar
+        status: 0, // 1=cocluido | 0=pendente
+        expiration_date: '2023-01-12', // data de vencimento
+        debit_date: '', // data do debito/recebimento
+        category: 'Telefone',    
     },
 ]
 
@@ -58,14 +58,14 @@ export default function ToBePaid({navigation}) {
                 onPress={() => navigation.navigate('BillInformation', {
                     item: {
                         id:item.id, 
-                        description:item.descricao,
-                        value: item.valor,
-                        type: item.tipo,
-                        situation: item.situacao,
-                        dv: item.dv, 
-                        db: item.db,
-                        category: item.categoria,
-                        status: item.status
+                        user_id: item.user_id,
+                        description:item.description,
+                        value: item.value,
+                        type: item.type,
+                        status: item.status,
+                        expiration_date: item.expiration_date, 
+                        debit_date: item.debit_date,
+                        category: item.category,
                     }})
                 }/>}
             />

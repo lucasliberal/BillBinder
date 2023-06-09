@@ -6,87 +6,55 @@ import * as DocumentPicker from 'expo-document-picker';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import {format} from "date-fns";
 
+import { ExpirationDatePicker, DebitDatePicker } from '../../../components/DatePicker';
+
 import styles_global from '../../style';
 import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 export default function BillInformation({navigation, route}){
-
-    const [expirationDate, setExpirationDate] = useState(new Date(route.params.item.dv)); //data de validade
-
-    const [debitDate, setDebitDate] = useState(route.params.item.db ? new Date(route.params.item.db) : new Date()); //data do débito/pagamento
-
+    
+    const [id, setId] = useState(route.params.item.id);
+    const [expirationDate, setExpirationDate] = useState(new Date(route.params.item.expiration_date)); //data de validade
+    const [debitDate, setDebitDate] = useState(route.params.item.debit_date ? (new Date(route.params.item.debit_date)) : new Date()); //data do débito/pagamento
     const [type, setType] = useState(route.params.item.type); //tipo
     const [category, setCategory] = useState(route.params.item.category); //categoria
+    const [value, setValue] = useState(route.params.item.value)
     const [description, setDescription] = useState(route.params.item.description); //descrição
     const [status, setStatus] = useState(route.params.item.status); //0 = não concluido, 1 = concluído
     const [digitableLine, setDigitableLine] = useState(''); // linha digitável
     const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
     const [paymentReceiptUri, setPaymentReceiptUri] = useState(''); //comprovante endereço
     
-    console.log(status);
-    
     const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
     const [paymentReceiptName, setPaymentReceiptName] = useState(''); //comprovante endereço
 
     const [editable, setEditable] = useState(false);
 
-    //***** DATE FUNCTIONS AND CONSTANTS *****//
-    //const [date, setDate] = useState(new Date());
-    const [showExpirationDatePicker, setShowExpirationDatePicker] = useState(false);
-    const [showDebitDatePicker, setShowDebitDatePicker] = useState(false);
-    
-    //Alternar seletor de data
-    const toggleExpirationDatePicker = () => {
-        setShowExpirationDatePicker(!showExpirationDatePicker);
-    };
 
-    const toggleDebitDatePicker = () => {
-        setShowDebitDatePicker(!showDebitDatePicker);
-    };
-
-    const onChangeExpirationDate = ({type}, selectedDate) => {
-        if (type == 'set'){
-            //const currentDate = selectedDate;
-            //setDate(currentDate);
-
-            if (Platform.OS === "android"){
-                toggleExpirationDatePicker();
-                // setExpirationDate(currentDate.toDateString());
-                setExpirationDate(selectedDate)
-            }
-        }else {
-            toggleExpirationDatePicker();
-        }
+    //Ao mudar a data de validade
+    const onChangeExpirationDate = async value => {
+        await setExpirationDate(value);
     }
 
-    const onChangeDebitDate = ({type}, selectedDate) => {
-        if (type == 'set'){
-            //const currentDate = selectedDate;
-            //setDate(currentDate);
-            if (Platform.OS === "android"){
-                toggleDebitDatePicker();
-                // setExpirationDate(currentDate.toDateString());
-                setDebitDate(selectedDate)
-            }
-        }else {
-            toggleDebitDatePicker();
-        }
+    const onChangeDebitDate = async value => {
+        await setDebitDate(value);
     }
 
-    const confirmIOSExpirationDate = () => {
-        setExpirationDate(expirationDate);
-        toggleExpirationDatePicker();
-    }
-
-    const confirmIOSDebitDate = () => {
-        setDebitDate(debitDate);
-        toggleDebitDatePicker();
-    }
-    //***** */
-
-    //***** OTHERS FUNCTIONS *****//
+    //Submeter alterações
     const submitChanges = () => {
         Alert.alert('Informações atualizadas com sucesso!');
+        console.log('informações salvas:');
+        console.log('data de validade: ' + expirationDate);
+        console.log('data de debito: ' + debitDate);
+        console.log('tipo: ' + type);
+        console.log('categoria: ' + category);
+        console.log('descrição: ' + description);
+        console.log('status: ' + status);
+        console.log('linha digitável: ' + digitableLine);
+        console.log('boleto: ' + paymentSlipUri);
+        console.log('comprovante: ' + paymentReceiptUri);
+        console.log(debitDate.valueOf());
+
         setEditable(!editable);
         //changeEditableMode();
         //navigation.pop();
@@ -111,7 +79,13 @@ export default function BillInformation({navigation, route}){
     }
 
     const toggleStatusValue = () => {
-        setStatus(previousState => !previousState);
+        if (status == 0){
+            //setDebitDate(new Date("yyyy-MM-dd"));
+            setStatus(previousState  => !previousState);
+        }else{
+            //setDebitDate(new Date("yyyy-MM-dd"));
+            setStatus(previousState => !previousState);
+        }
     }
     //***** */
 
@@ -124,212 +98,92 @@ export default function BillInformation({navigation, route}){
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={styles_local.conteudo}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    {/** Data de vencimento */}
-                    <Text style={styles_global.txt_inputTitle}>Data de vencimento*</Text>
-                    {/** Expiration Datepicker */}
-                        {/** Abrir seletor de data */}
-                        {showExpirationDatePicker && ( 
-                            <View>
-                                <TouchableOpacity
-                                onPress={toggleExpirationDatePicker}
-                                disabled={editable}
-                                >
-                                    <TextInput
-                                    value={format(expirationDate, "dd/MM/yyyy")}
-                                    style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
-                                    placeholder='Selecione a data de vencimento' 
-                                    placeholderTextColor={'black'}
-                                    editable={editable}
-                                    onPressIn={toggleExpirationDatePicker}
-                                    />
-                                </TouchableOpacity>
-                                <DateTimePicker
-                                mode="date"
-                                display="spinner"
-                                value={expirationDate}
+                    <View style={styles_global.date_field}>
+                        <View style={{width: 144}}>
+                            {/** Data de vencimento */}
+                            <Text style={styles_global.txt_inputTitle}>Data do vencimento*</Text>
+
+                            <ExpirationDatePicker
                                 onChange={onChangeExpirationDate}
-                                style={{height: 120, marginTop: -10}}
-                                />
-                            </View>
-                        )}
-
-                        {/*Seletor de data em dispositivos IOS*/}
-                        {!showExpirationDatePicker && Platform.OS === "ios" && (
-                            <View style={{flexDirection: "row", justifyContent: "space-around"}}>
-                                <TouchableOpacity 
-                                style={{
-                                    paddingHorizontal: 14,
-                                    backgroundColor:'#d5d5d5',  
-                                    padding: 14,
-                                    borderRadius: 50
-                                    }}
-                                onPress={toggleExpirationDatePicker}
-                                >
-                                    <Text
-                                    style={{fontSize:14, fontWeight: "500", color: '#075985'}}>Cancelar</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity 
-                                style={{
-                                    paddingHorizontal: 14,
-                                    backgroundColor:'#075985',  
-                                    padding: 14,
-                                    borderRadius: 50
-                                    }}
-                                onPress={confirmIOSExpirationDate}
-                                >
-                                    <Text style={{fontSize:14, fontWeight: "500", color: '#d5d5d5'}}>Confirmar</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-
-                        {/** Mostrar text input */}
-                        {!showExpirationDatePicker && (
-                            <TouchableOpacity
-                                onPress={toggleExpirationDatePicker}
-                                disabled={!editable}
-                                >
-                                <TextInput
-                                value={format(expirationDate, "dd/MM/yyyy")}
-                                style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
-                                placeholder='Selecione a data de vencimento' 
-                                placeholderTextColor={'black'}
+                                date={expirationDate}//expiration date
                                 editable={editable}
-                                onPressIn={toggleExpirationDatePicker}
+                            />
+                        </View>
+                        <View style={{width: 144}}>
+                            {status == 1 && (
+                            /** Data de débito */
+                            <View>
+                                <Text style={styles_global.txt_inputTitle}>{'Data do ' + texto}</Text>
+                                <DebitDatePicker
+                                onChange={onChangeDebitDate}
+                                date={debitDate}// debitdate
+                                editable={editable}
                                 />
-                            </TouchableOpacity>
-                        )}
-                    
-                    {status == 1 && (
+                            </View>  
+                            )}
+                        </View>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {/** Tipo */}
                         <View>
-                            {/** Data de débito */}
-                            <Text style={styles_global.txt_inputTitle}>{'Data do ' + texto}</Text>
-                            {/** Date picker */}
-                                {/** Abrir seletor de data */}
-                                {showDebitDatePicker && ( 
-                                    <View>
-                                        <TouchableOpacity
-                                        onPress={toggleDebitDatePicker}
-                                        disabled={editable}
-                                        >
-                                            <TextInput
-                                            value={format(debitDate, "dd/MM/yyyy")}
-                                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
-                                            placeholder={'Selecione a data do ' + texto}  
-                                            placeholderTextColor={'black'}
-                                            editable={editable}
-                                            onPressIn={toggleDebitDatePicker}
-                                            />
-                                        </TouchableOpacity>
-                                        <DateTimePicker
-                                        mode="date"
-                                        display="spinner"
-                                        value={debitDate}
-                                        onChange={onChangeDebitDate}
-                                        style={{height: 120, marginTop: -10}}
-                                        />
-                                    </View>
-                                )}
-
-                                {/*Seletor de data em dispositivos IOS*/}
-                                {!showDebitDatePicker && Platform.OS === "ios" && (
-                                    <View style={{flexDirection: "row", justifyContent: "space-around"}}>
-                                        <TouchableOpacity 
-                                        style={{
-                                            paddingHorizontal: 14,
-                                            backgroundColor:'#d5d5d5',  
-                                            padding: 14,
-                                            borderRadius: 50
-                                            }}
-                                        onPress={toggleDebitDatePicker}
-                                        >
-                                            <Text
-                                            style={{fontSize:14, fontWeight: "500", color: '#075985'}}>Cancelar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity 
-                                        style={{
-                                            paddingHorizontal: 14,
-                                            backgroundColor:'#075985',  
-                                            padding: 14,
-                                            borderRadius: 50
-                                            }}
-                                        onPress={confirmIOSDebitDate}
-                                        >
-                                            <Text style={{fontSize:14, fontWeight: "500", color: '#d5d5d5'}}>Confirmar</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-
-                                {/** Mostrar text input */}
-                                {!showDebitDatePicker && (
-                                    <TouchableOpacity
-                                    onPress={toggleDebitDatePicker}
-                                    disabled={!editable}
-                                    >
-                                        <TextInput
-                                        value={format(debitDate, "dd/MM/yyyy")}
-                                        style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
-                                        placeholder={'Selecione a data do ' + texto}  
-                                        placeholderTextColor={'black'}
-                                        editable={editable}
-                                        onPressIn={toggleDebitDatePicker}
-                                        />
-                                    </TouchableOpacity>
-                                )}
+                            <Text style={styles_global.txt_inputTitle}>Tipo*</Text>
+                            <View style={[editable ? styles_global.select_input_container : styles_global.select_input_container_alternative]}>
+                                <Picker
+                                    selectedValue={type}
+                                    onValueChange={(itemValue) => 
+                                        setType(itemValue)}
+                                    style={[editable ? styles_global.select_input : styles_global.select_input_alternative, {width: 140}]}
+                                    enabled={editable}
+                                    dropdownIconColor={editable ? '#14423C' : '#b2b2b2'}>
+                                        <Picker.Item label='Receber' value={1} />
+                                        <Picker.Item label='Pagar' value={0}/>
+                                </Picker>
                             </View>
-                        )}
+                        </View>
                             
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                {/** Tipo */}
-                                <View>
-                                    <Text style={styles_global.txt_inputTitle}>Tipo*</Text>
-                                    <View style={[editable ? styles_global.select_input_container : styles_global.select_input_container_alternative]}>
-                                        <Picker
-                                            selectedValue={type}
-                                            onValueChange={(itemValue) => 
-                                                setType(itemValue)}
-                                            style={[editable ? styles_global.select_input : styles_global.select_input_alternative, {width: 140}]}
-                                            enabled={editable}
-                                            dropdownIconColor={editable ? '#14423C' : '#b2b2b2'}>
-                                                <Picker.Item label='Receber' value={1} />
-                                                <Picker.Item label='Pagar' value={0}/>
-                                        </Picker>
-                                    </View>
-                                </View>
-                            
-                                <View style={{flexDirection:'row', alignItems: 'center'}}>
-                                    {/** Categoria */}
-                                    <View>
-                                        <Text style={styles_global.txt_inputTitle}>Categoria*</Text>
-                                        <View style={editable ? styles_global.select_input_container : styles_global.select_input_container_alternative}>
-                                            <Picker                             
-                                            selectedValue={category}
-                                            onValueChange={(itemValue) => 
-                                                setCategory(itemValue)}
-                                            style={[editable ? styles_global.select_input : styles_global.select_input_alternative, {width: 140}]}
-                                            enabled={editable}
-                                            dropdownIconColor={editable ? '#14423C' : '#b2b2b2'}>
-                                                <Picker.Item label='Energia' value={'energia'} />
-                                                <Picker.Item label='Internet' value={'internet'}/>
-                                                <Picker.Item label='Salário' value={'salario'}/>
-                                            </Picker>
-                                        </View>
-                                    </View>
+                        <View style={{flexDirection:'row', alignItems: 'center'}}>
+                            {/** Categoria */}
+                            <View>
+                                <Text style={styles_global.txt_inputTitle}>Categoria*</Text>
+                                <View style={editable ? styles_global.select_input_container : styles_global.select_input_container_alternative}>
+                                    <Picker                             
+                                    selectedValue={category}
+                                    onValueChange={(itemValue) => 
+                                        setCategory(itemValue)}
+                                    style={[editable ? styles_global.select_input : styles_global.select_input_alternative, {width: 140}]}
+                                    enabled={editable}
+                                    dropdownIconColor={editable ? '#14423C' : '#b2b2b2'}>
+                                        <Picker.Item label='Energia' value={'energia'} />
+                                        <Picker.Item label='Internet' value={'internet'}/>
+                                        <Picker.Item label='Salário' value={'salario'}/>
+                                    </Picker>
                                 </View>
                             </View>
-            
-                    
+                        </View>
+                    </View>
+                    {/** Descrição */}
+                    <Text style={styles_global.txt_inputTitle}>Descrição*</Text>
+                    <TextInput
+                    value={description}
+                    onChangeText={setDescription} 
+                    style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
+                    placeholder='Digite a descrição'
+                    placeholderTextColor={'black'}
+                    editable={editable}
+                    maxLength={30}/>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 24}}>
+                        {/* Valor */}
                         <View style={{flex: 1}}>
-                            {/** Descrição */}
-                            <Text style={styles_global.txt_inputTitle}>Descrição*</Text>
+                            <Text style={styles_global.txt_inputTitle}>Valor*</Text>
                             <TextInput
-                            value={description}
-                            onChangeText={setDescription} 
+                            onChangeText={setValue} 
+                            value={value}
                             style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
-                            placeholder='Digite a descrição'
+                            placeholder='Digite o valor' 
                             placeholderTextColor={'black'}
-                            editable={editable}
-                            maxLength={30}/>
+                            maxLength={30}
+                            keyboardType='numeric'
+                            editable={editable}/>
                         </View>
                         <View>
                             <View style={{flexDirection: 'column', alignItems:'flex-start', flex: 1}}>
@@ -348,7 +202,7 @@ export default function BillInformation({navigation, route}){
                             </View>
                         </View>
                     </View>
-
+                
                     <>{/* Linha digitável modelo 2
                     <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
                     <View style={{rowGap: 12, marginBottom: 16}}>

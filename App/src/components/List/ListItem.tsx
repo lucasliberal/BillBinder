@@ -5,9 +5,9 @@ import format from 'date-fns/format';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function ListItem( {data, onPress} ){
-    const title = data.tipo === 0 && data.situacao === 1 ? 'Pago' :
-                    data.tipo === 0 && data.situacao === 0 ? 'A pagar' :
-                    data.tipo === 1 && data.situacao === 1 ? 'Recebido' : 'A receber';
+    const title = data.type === 0 && data.status === 1 ? 'Pago' :
+                    data.type === 0 && data.status === 0 ? 'A pagar' :
+                    data.type === 1 && data.status === 1 ? 'Recebido' : 'A receber';
 
     return (
         <TouchableOpacity style={styles.item} activeOpacity={0.5} onPress={onPress}>
@@ -15,16 +15,16 @@ export default function ListItem( {data, onPress} ){
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{flexDirection: 'column', marginStart: 12}}>
                         <View style={{flexDirection: 'row', marginBottom:4, alignItems:'baseline'}}>
-                        <Text style={[styles.titulo, data.tipo === 1 ? {color:"#318E22"} : {color:"#C32020"}]}>{title} </Text>
-                            <Text style={styles.data}>{data.situacao === 1 ? `em ${format(new Date(data.db), "dd/MM/yyyy")}` : `até ${format(new Date(data.dv), "dd/MM/yyyy")}` }</Text>
+                        <Text style={[styles.titulo, data.type === 1 ? {color:"#318E22"} : {color:"#C32020"}]}>{title} </Text>
+                            <Text style={styles.data}>{data.status === 1 ? `em ${format(new Date(data.debit_date), "dd/MM/yyyy")}` : `até ${format(new Date(data.expiration_date), "dd/MM/yyyy")}` }</Text>
                         </View>
-                        <Text style={styles.descricao}>{data.descricao}</Text>
+                        <Text style={styles.descricao}>{data.description}</Text>
                     </View>
                 </View>
                 <Text style={styles.valor}>
-                    {data.tipo === 1 ?
-                        `+ R$ ${data.valor}` :
-                        `- R$ ${data.valor}`}
+                    {data.type === 1 ?
+                        `+ R$ ${data.value}` :
+                        `- R$ ${data.value}`}
                 </Text>
             </View>
         </TouchableOpacity>

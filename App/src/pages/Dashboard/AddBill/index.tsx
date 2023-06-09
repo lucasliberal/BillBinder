@@ -1,51 +1,41 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import styles_global from '../../style';
 import {format} from "date-fns";
+import { ExpirationDatePicker } from '../../../components/DatePicker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddBill(){
-    const [expirationDate, setExpirationDate] = useState(null); //data da validade
+    const [expirationDate, setExpirationDate] = useState(new Date()); //data da validade
     const [type, setType] = useState(0); //tipo
-    const [category, setCategory] = useState(null); //categoria
-    const [description, setDescription] = useState(null); //descrição
-    const [digitableLine, setDigitableLine] = useState(null); //linha digitável
-    const [paymentSlipUri, setPaymentSlipUri] = useState(null); //boleto endereço
-    const [paymentSlipName, setPaymentSlipName] = useState(null); //boleto nome
- 
-    //***** DATE FUNCTIONS AND CONSTANTS *****//
-    const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
+    const [category, setCategory] = useState(''); //categoria
+    const [description, setDescription] = useState(''); //descrição
+    const [value, setValue] = useState(''); //valor
+    const [digitableLine, setDigitableLine] = useState(''); //linha digitável
+    const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
+    const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
+
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        getUserData();
+    })
     
-    //Alternar seletor de data
-    const toggleDatePicker = () => {
-        setShowPicker(!showPicker);
-    };
-
-    const onChangeDate = ({type}, selectedDate) => {
-        if (type == 'set'){
-            const currentDate = selectedDate;
-            setDate(currentDate);
-
-            if (Platform.OS === "android"){
-                toggleDatePicker();
-                // setExpirationDate(currentDate.toDateString());
-                setExpirationDate(format(currentDate, "dd/MM/yyyy"))
-            }
-        }else {
-            toggleDatePicker();
-        }
+    async function getUserData(){
+        let response = await AsyncStorage.getItem('userId');
+        let json = JSON.parse(response);
+        setUserId(json);
     }
 
-    const confirmIOSDate = () => {
-        setExpirationDate(date.toDateString());
-        toggleDatePicker();
+    const onChangeExpirationDate = async (value) => {
+        await setExpirationDate(value)
     }
-    
-    //***** FORM *****//
+
     //Selecionar Boleto
     const pickPaymentSlip = async () => {
         let result = await DocumentPicker.getDocumentAsync({});
@@ -57,105 +47,52 @@ export default function AddBill(){
 
     const submit = () => {
         //verifica se os campos obrigatórios estão preenchidos
-        if((date && category && description)){
-            alert('Formulário submetido');
-            console.log('Data: ' + date);
-            console.log('Tipo ID: ' + type);
-            console.log('Categoria: ' + category);
-            console.log('Descrição: ' + description);
-            // console.log('Linha digitável: ' + digitableLine);
-            // console.log('Boleto URL: ' + paymentSlipUri);
+        if((expirationDate && category && description && value)){
+            axios.post('http://192.168.0.114:3000/bills', {
+                user_id: userId,
+                description: description,
+                type: type,
+                value: value,
+                status: 0, //sempre o status de adição será 'pendente'
+                expiration_date: format(expirationDate, "yyyy-MM-dd"),
+                debit_date: "",
+                category: category,
+                digitableLine: digitableLine,
+                paymentSlipUri: paymentSlipUri,
+                paymentReceiptUri: "",
+            })
+            .then( (response) => {return response} )
+            .then ( () => {
+                Alert.alert('', 'Lançamento adicionado com sucesso!');
+                cleanFields();
+            })
         }
         else{
-            alert('Preencha todos os campos!');
-            console.log('Data: ' + date);
-            console.log('Tipo ID: ' + type);
-            console.log('Categoria: ' + category);
-            console.log('Descrição: ' + description);
-            // console.log('Linha digitável: ' + digitableLine);
-            // console.log('Boleto URL: ' + paymentSlipUri);
+            Alert.alert('', 'Preencha todos os campos!');
         }
     }
 
+    const cleanFields = () => {
+        setExpirationDate(new Date());
+        setType(0);
+        setCategory(null);
+        setValue('');
+        setDescription('');
+        setDigitableLine('');
+    }
     return(
         <View
         style={styles_global.container}>
-
             <KeyboardAvoidingView 
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={styles_local.conteudo}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {/** Data de vencimento */}
                     <Text style={styles_global.txt_inputTitle}>Data de vencimento*</Text>
-                    {/** Date picker */}
-                        {showPicker && ( 
-                            <View>
-                                <TouchableOpacity
-                                onPress={toggleDatePicker}
-                                >
-                                    <TextInput
-                                    value={expirationDate}
-                                    style={[styles_global.txt_input, {width:'100%'}]}
-                                    placeholder='Selecione a data de vencimento' 
-                                    placeholderTextColor={'black'}
-                                    editable={true}
-                                    onPressIn={toggleDatePicker}
-                                    />
-                                </TouchableOpacity>
-                                <DateTimePicker
-                                mode="date"
-                                display="spinner"
-                                value={date}
-                                onChange={onChangeDate}
-                                style={{height: 120, marginTop: -10}}
-                                minimumDate={new Date()}
-                                />
-                            </View>
-                        )}
-
-                        {/*Seletor de data em dispositivos IOS*/}
-                        {!showPicker && Platform.OS === "ios" && (
-                            <View style={{flexDirection: "row", justifyContent: "space-around"}}>
-                                <TouchableOpacity 
-                                style={{
-                                    paddingHorizontal: 14,
-                                    backgroundColor:'#d5d5d5',  
-                                    padding: 14,
-                                    borderRadius: 50
-                                    }}
-                                onPress={toggleDatePicker}
-                                >
-                                    <Text
-                                    style={{fontSize:14, fontWeight: "500", color: '#075985'}}>Cancelar</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity 
-                                style={{
-                                    paddingHorizontal: 14,
-                                    backgroundColor:'#075985',  
-                                    padding: 14,
-                                    borderRadius: 50
-                                    }}
-                                onPress={confirmIOSDate}
-                                >
-                                    <Text style={{fontSize:14, fontWeight: "500", color: '#d5d5d5'}}>Confirmar</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-
-                        {!showPicker && (
-                            <TouchableOpacity
-                                onPress={toggleDatePicker}
-                                >
-                                <TextInput
-                                value={expirationDate}
-                                style={[styles_global.txt_input, {width:'100%'}]}
-                                placeholder='Selecione a data de vencimento' 
-                                placeholderTextColor={'black'}
-                                editable={true}
-                                onPressIn={toggleDatePicker}
-                                />
-                            </TouchableOpacity>
-                        )}
+                    <ExpirationDatePicker
+                        onChange={onChangeExpirationDate}
+                        date={expirationDate}
+                    />
                     
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         {/** Tipo */}
@@ -195,10 +132,22 @@ export default function AddBill(){
                         </View>
                     </View>
         
+                    {/** Valor */}
+                    <Text style={styles_global.txt_inputTitle}>Valor*</Text>
+                    <TextInput
+                    onChangeText={setValue} 
+                    value={value}
+                    style={[styles_global.txt_input, {width:'100%'}]} 
+                    placeholder='Digite o valor' 
+                    placeholderTextColor={'black'}
+                    maxLength={30}
+                    keyboardType='numeric'/>
+
                     {/** Descrição */}
                     <Text style={styles_global.txt_inputTitle}>Descrição*</Text>
                     <TextInput
                     onChangeText={setDescription} 
+                    value={description}
                     style={[styles_global.txt_input, {width:'100%'}]} 
                     placeholder='Digite a descrição' 
                     placeholderTextColor={'black'}
@@ -215,7 +164,7 @@ export default function AddBill(){
                     keyboardType='numeric'
                     />
         
-                    {/** Boleto */}
+                    {/** Boleto **
                     <Text style={styles_global.txt_inputTitle}>Boleto</Text>
                     {paymentSlipUri ?
                     <TouchableOpacity onPress={() => alert('Abrir documento')} style={styles_global.btn_upload}>
@@ -229,11 +178,16 @@ export default function AddBill(){
                             <AntDesign name="upload" size={20} color="#14423C" />
                             <Text>Enviar boleto</Text>
                         </View>
-                    </TouchableOpacity>}
+                    </TouchableOpacity>} */}
 
                     {/** Botão adicionar pagamento */}
                     <TouchableOpacity style={styles_global.btn1} activeOpacity={0.8} onPress={submit}>
                         <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Adicionar</Text>
+                    </TouchableOpacity>
+
+                    {/** Botão limpar campos */}
+                    <TouchableOpacity style={{marginTop: 20}} activeOpacity={0.8} onPress={cleanFields}>
+                        <Text style={{color: '#14423C', fontSize: 16, alignSelf: 'center', borderBottomColor: "#14423C", borderBottomWidth: 1}}>Limpar campos</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -247,8 +201,7 @@ const styles_local = StyleSheet.create({
         paddingBottom: 24,
         paddingStart: 24,
         paddingEnd: 24,
-        flex: 1,
-        backgroundColor: '#e7e7e7',
+        //backgroundColor: 'red',
     },
 
 });

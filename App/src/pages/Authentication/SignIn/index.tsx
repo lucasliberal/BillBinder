@@ -1,35 +1,55 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Image, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, StyleSheet, Image, Text, TextInput, TouchableOpacity, StatusBar, Alert} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import styles_global from '../style';
+import styles_global from '../../style';
 
 export default function Login({navigation}) {
-    const [username, setUsername] = useState(''); 
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const signIn = () => {
+      //run in terminal: npx json-server --host 192.168.0.114 ./mock/db.json
+
+      fetch(`http://192.168.0.114:3000/users?email=${email}&password=${password}`)
+        .then ( (response) => {return response.json()})
+        .then ( (json) => {
+          if (Object.keys(json).length === 0){
+            Alert.alert('', 'Login inválido');
+          }else {
+            AsyncStorage.setItem('userId', JSON.stringify(json[0]['id']));
+            navigation.navigate('Dashboard')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      //navigation.navigate('Dashboard')
+    }
 
     return (
       <View style={styles_local.container}>
         <StatusBar/>
-        <Image style={styles_local.logo} source={require('../../../assets/icon.png')}/>
+        <Image style={styles_local.logo} source={require('../../../../assets/icon.png')}/>
         
         <View>
-          <TextInput placeholder=" Digite aqui seu e-mail" placeholderTextColor={'white'} value={username} onChangeText={setUsername} style={styles_global.txt_inputLoginPage}/>
-          <TextInput placeholder=" Digite aqui sua senha" secureTextEntry={true} placeholderTextColor={'white'} value={password} onChangeText={setPassword} style={styles_global.txt_inputLoginPage}/>
+          <TextInput placeholder="E-mail" placeholderTextColor={'white'} value={email} onChangeText={setEmail} style={styles_global.txt_inputLoginPage}/>
+          <TextInput placeholder="Senha" secureTextEntry={true} placeholderTextColor={'white'} value={password} onChangeText={setPassword} style={styles_global.txt_inputLoginPage}/>
           
           {/** Botao Entrar */}
-          <TouchableOpacity onPress={() => navigation.navigate('Dashboard')} style={styles_global.btn_login1}>
+          <TouchableOpacity onPress={signIn} style={styles_global.btn_login1}>
             <Text style={styles_global.txt_btnLogin}>Entrar</Text>
           </TouchableOpacity>
         </View>
 
         {/** Botao Cadastre-se e Esqueci a senha */}
         <View style = {styles_local.btn_position}>
-          <TouchableOpacity onPress={null} style={styles_global.btn_login2}>
-            <Text style={{color:'white'}}>Cadastre-se</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles_global.btn_login2}>
+            <Text style={{color:'white', fontSize: 14, borderBottomColor: 'white', borderBottomWidth: 1}}>Cadastre-se</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={null} style={styles_global.btn_login2}>
-            <Text style={{color:'white'}}>Esqueci a senha</Text>
+            <Text style={{color:'white', fontSize: 14, borderBottomColor: 'white', borderBottomWidth: 1}}>Esqueci a senha</Text>
           </TouchableOpacity>
         </View>
 

@@ -7,14 +7,14 @@ import styles_global from '../../style';
 const list = [
     {
         id: 1,
-        descricao: 'Emprestimo fulano',
-        valor: '2650,00',
-        tipo: 1, // 1=receber | 0=pagar
-        situacao: 0, // 1=cocluido | 0=pendente
-        dv: '2023-01-15', // data de vencimento
-        db: '', // data do debito/recebimento
-        categoria: 'Salário',
-        status: 0
+        user_id: 1,
+        description: 'Emprestimo fulano',
+        value: '2650,00',
+        type: 1, // 1=receber | 0=pagar
+        status: 0, // 1=cocluido | 0=pendente
+        expiration_date: '2023-01-15', // data de vencimento
+        debit_date: '', // data do debito/recebimento
+        category: 'Salário',
     },
 ];
 
@@ -47,14 +47,14 @@ export default function ToBeReceived({navigation}) {
             onPress={() => navigation.navigate('BillInformation', {
                 item: {
                     id:item.id, 
-                    description:item.descricao,
-                    value: item.valor,
-                    type: item.tipo,
-                    situation: item.situacao,
-                    dv: item.dv, 
-                    db: item.db,
-                    category: item.categoria,
-                    status: item.status
+                    user_id: item.user_id,
+                    description:item.description,
+                    value: item.value,
+                    type: item.type,
+                    status: item.status,
+                    expiration_date: item.expiration_date, 
+                    debit_date: item.debit_date,
+                    category: item.category,
                 }})
             }/>}
         />

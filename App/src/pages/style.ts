@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles_global = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor:'#d5d5d5',
+        backgroundColor:'#E1E1E1',
     },
 
     //TEXT INPUT
@@ -30,23 +30,35 @@ const styles_global = StyleSheet.create({
     },
     txt_inputTitle:{
       color: '#14423C',
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 'bold',
       marginBottom: 6
     },
     txt_inputLoginPage: {
-      position: 'relative',
-      display: 'flex',
-      textAlign: 'left',
-      paddingStart: 16,
       width: 300,
       height: 50,
+      textAlign: 'left',
+      paddingStart: 16,
       alignSelf: 'center',
       borderColor: 'white',
       borderLeftWidth: 10,
       borderBottomWidth: 2,
       marginBottom: 40,
       color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold'
+    },
+    txt_inputRegisterPage: {
+      display: 'flex',
+      textAlign: 'left',
+      width: 300,
+      height: 43,
+      backgroundColor: '#f5f5f5',
+      borderRadius: 5,
+      paddingStart: 16,
+      alignSelf: 'center',
+      fontSize: 16,
+      fontWeight: 'bold'
     },
     txt_input_digitableLine:{
       paddingLeft:0,
@@ -82,7 +94,7 @@ const styles_global = StyleSheet.create({
     btn_login1:{
       width: 180,
       elevation: 8,
-      backgroundColor: 'white',
+      backgroundColor: '#F5F5F5',
       borderRadius: 30,
       paddingVertical: 10,
       paddingHorizontal: 12,
@@ -90,8 +102,8 @@ const styles_global = StyleSheet.create({
     },
     btn_login2:{
       borderColor: 'white',
-      borderWidth: 2,
-      borderRadius: 20,
+      // borderWidth: 2,
+      // borderRadius: 20,
       padding: 5,
     },
     txt_btnLogin:{
@@ -136,6 +148,10 @@ const styles_global = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       color: '#14423C'
+    },
+    date_field:{
+      flexDirection: 'row',
+      justifyContent: 'space-between'
     }
 });
 
