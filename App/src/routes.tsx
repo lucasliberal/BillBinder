@@ -26,7 +26,9 @@ export function Routes(){
 export function Dashboard(){
     return(
         <Tab.Navigator
+        initialRouteName="Caixa"
         screenOptions={{
+            unmountOnBlur: true,
             tabBarHideOnKeyboard: true,
             header:({navigation, route, options}) => {
                 const titulo = getHeaderTitle(options, route.name);

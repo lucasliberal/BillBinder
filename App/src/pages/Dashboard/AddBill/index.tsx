@@ -10,15 +10,24 @@ import { ExpirationDatePicker } from '../../../components/DatePicker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+function ballonInput(){
+    return(
+        <TextInput placeholder='Digite...'></TextInput>
+    );
+}
+
 export default function AddBill(){
     const [expirationDate, setExpirationDate] = useState(new Date()); //data da validade
     const [type, setType] = useState(0); //tipo
-    const [category, setCategory] = useState(''); //categoria
+    const [category, setCategory] = useState(); //categoria
     const [description, setDescription] = useState(''); //descrição
     const [value, setValue] = useState(''); //valor
     const [digitableLine, setDigitableLine] = useState(''); //linha digitável
     const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
     const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
+
+    const [editablePickItem, setEditablePickItem] = useState('adicionar');
+    const [editablePickLabel, setEditablePickItemLabel] = useState('Digite...');
 
     const [userId, setUserId] = useState('');
 
@@ -118,14 +127,20 @@ export default function AddBill(){
                                 <View style={styles_global.select_input_container}>
                                     <Picker                    
                                     selectedValue={category}
-                                    onValueChange={(itemValue) => 
-                                        setCategory(itemValue)}
+                                    onValueChange={(itemValue) => {
+                                        if(itemValue == 'adicionar'){
+                                            /** Manter categoria */
+                                        }else{
+                                            setCategory(itemValue)
+                                        }
+                                    }}
                                     style={[styles_global.select_input, {width: 140}]}
                                     dropdownIconColor={'#14423C'}>
                                         <Picker.Item label='Selecione...' value={null} />
                                         <Picker.Item label='Energia' value={'energia'} />
                                         <Picker.Item label='Internet' value={'internet'}/>
                                         <Picker.Item label='Salário' value={'salario'}/>
+                                        <Picker.Item label={'Outro'} value={'outro'}/>
                                     </Picker>
                                 </View>
                             </View>
@@ -138,7 +153,7 @@ export default function AddBill(){
                     onChangeText={setValue} 
                     value={value}
                     style={[styles_global.txt_input, {width:'100%'}]} 
-                    placeholder='Digite o valor' 
+                    placeholder='Insira o valor' 
                     placeholderTextColor={'black'}
                     maxLength={30}
                     keyboardType='numeric'/>
@@ -149,15 +164,17 @@ export default function AddBill(){
                     onChangeText={setDescription} 
                     value={description}
                     style={[styles_global.txt_input, {width:'100%'}]} 
-                    placeholder='Digite a descrição' 
+                    placeholder='Insira a descrição' 
                     placeholderTextColor={'black'}
                     maxLength={30}/>
 
                     {/** Linha digitável */}
                     <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
-                    <TextInput onChangeText={setDigitableLine}
+                    <TextInput 
+                    onChangeText={setDigitableLine}
+                    value={digitableLine}
                     style={[styles_global.txt_input, {height: 55, width:'100%'}]}
-                    placeholder='Digite a linha digitável' placeholderTextColor={'black'}
+                    placeholder='Insira a linha digitável' placeholderTextColor={'black'}
                     multiline={true}
                     numberOfLines={2}
                     maxLength={48}

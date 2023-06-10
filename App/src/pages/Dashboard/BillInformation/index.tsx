@@ -3,17 +3,17 @@ import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, Keyboar
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import * as DocumentPicker from 'expo-document-picker';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import {format} from "date-fns";
+import axios from 'axios';
+import format from 'date-fns/format';
 
 import { ExpirationDatePicker, DebitDatePicker } from '../../../components/DatePicker';
 
 import styles_global from '../../style';
-import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 export default function BillInformation({navigation, route}){
     
     const [id, setId] = useState(route.params.item.id);
+    const [userId, setUserId] = useState(route.params.item.user_id);
     const [expirationDate, setExpirationDate] = useState(new Date(route.params.item.expiration_date)); //data de validade
     const [debitDate, setDebitDate] = useState(route.params.item.debit_date ? (new Date(route.params.item.debit_date)) : new Date()); //data do débito/pagamento
     const [type, setType] = useState(route.params.item.type); //tipo
@@ -21,15 +21,13 @@ export default function BillInformation({navigation, route}){
     const [value, setValue] = useState(route.params.item.value)
     const [description, setDescription] = useState(route.params.item.description); //descrição
     const [status, setStatus] = useState(route.params.item.status); //0 = não concluido, 1 = concluído
-    const [digitableLine, setDigitableLine] = useState(''); // linha digitável
-    const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
-    const [paymentReceiptUri, setPaymentReceiptUri] = useState(''); //comprovante endereço
+    const [digitableLine, setDigitableLine] = useState(route.params.item.digitableLine); // linha digitável
+    const [paymentSlipUri, setPaymentSlipUri] = useState(route.params.item.paymentReceiptUri); //boleto endereço
+    const [paymentSlipName, setPaymentSlipName] = useState(route.params.item.paymentReceiptName); //boleto nome
+    const [paymentReceiptUri, setPaymentReceiptUri] = useState(route.params.item.paymentReceiptUri); //comprovante endereço
+    const [paymentReceiptName, setPaymentReceiptName] = useState(route.params.item.paymentReceiptName); //comprovante endereço
     
-    const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
-    const [paymentReceiptName, setPaymentReceiptName] = useState(''); //comprovante endereço
-
     const [editable, setEditable] = useState(false);
-
 
     //Ao mudar a data de validade
     const onChangeExpirationDate = async value => {
@@ -43,21 +41,20 @@ export default function BillInformation({navigation, route}){
     //Submeter alterações
     const submitChanges = () => {
         Alert.alert('Informações atualizadas com sucesso!');
-        console.log('informações salvas:');
-        console.log('data de validade: ' + expirationDate);
-        console.log('data de debito: ' + debitDate);
-        console.log('tipo: ' + type);
-        console.log('categoria: ' + category);
-        console.log('descrição: ' + description);
-        console.log('status: ' + status);
-        console.log('linha digitável: ' + digitableLine);
-        console.log('boleto: ' + paymentSlipUri);
-        console.log('comprovante: ' + paymentReceiptUri);
-        console.log(debitDate.valueOf());
-
+        axios.put(`http://192.168.0.114:3000/bills/${id}`, {
+            user_id: userId,
+            description: description,
+            type: type,
+            value: value,
+            status: status, //sempre o status de adição será 'pendente'
+            expiration_date: format(expirationDate, "yyyy-MM-dd"),
+            debit_date: format(debitDate, "yyyy-MM-dd"),
+            category: category,
+            digitableLine: digitableLine,
+            paymentSlipUri: paymentSlipUri,
+            paymentReceiptUri: paymentSlipUri,
+        })
         setEditable(!editable);
-        //changeEditableMode();
-        //navigation.pop();
     }
 
     //Selecionar boleto de pagamento
@@ -81,10 +78,10 @@ export default function BillInformation({navigation, route}){
     const toggleStatusValue = () => {
         if (status == 0){
             //setDebitDate(new Date("yyyy-MM-dd"));
-            setStatus(previousState  => !previousState);
+            setStatus(1);
         }else{
             //setDebitDate(new Date("yyyy-MM-dd"));
-            setStatus(previousState => !previousState);
+            setStatus(0);
         }
     }
     //***** */
@@ -170,7 +167,7 @@ export default function BillInformation({navigation, route}){
                     placeholder='Digite a descrição'
                     placeholderTextColor={'black'}
                     editable={editable}
-                    maxLength={30}/>
+                    maxLength={26}/>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 24}}>
                         {/* Valor */}
                         <View style={{flex: 1}}>

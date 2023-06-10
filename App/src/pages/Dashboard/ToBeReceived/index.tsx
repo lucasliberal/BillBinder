@@ -3,44 +3,63 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import { ListItem } from "../../../components/List";
 import { PeriodFilter } from "../../../components/Filter";
 import styles_global from '../../style';
-
-const list = [
-    {
-        id: 1,
-        user_id: 1,
-        description: 'Emprestimo fulano',
-        value: '2650,00',
-        type: 1, // 1=receber | 0=pagar
-        status: 0, // 1=cocluido | 0=pendente
-        expiration_date: '2023-01-15', // data de vencimento
-        debit_date: '', // data do debito/recebimento
-        category: 'Salário',
-    },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
+import Caixa from "../Caixa";
 
 export default function ToBeReceived({navigation}) {
 
 
     const [initDate, setInitDate] = useState();
     const [endDate, setEndDate] = useState();
+    const [data, setData] = useState();
+    const [userId, setUserId] = useState();
+    const [refreshing, setRefreshing] = useState(false);
         
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
         setEndDate(endingDate);
     } 
 
+    async function getUserId () {
+        try {  
+            AsyncStorage.getItem('userId')
+            .then((value) => {
+                if(value) {
+                    setUserId(JSON.parse(value));
+                };
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const getDataFromApi = async () => {
+        //recebe apenas lançamentos com o status=1 (concluido) 
+        setRefreshing(true);
+        await axios.get(`http://192.168.0.114:3000/bills?user_id=${userId}&status=0&type=1`)
+        .then((data) => {
+            setData(data.data)
+        })
+        .then(() => setRefreshing(false))
+        .catch((err) => console.error(err))
+    }
+
     useEffect(() => {
-        //executa o comando após a seleção do período
-        console.log('********* TELA A RECEBER **********');
-        console.log('De: ' + initDate);
-        console.log('Até: ' + endDate);
-    }), [initDate, endDate];
+        getUserId();
+    }), [];
+
+    useEffect(() => {
+        getDataFromApi();
+    }, [userId, initDate, endDate])
 
     return(
         <View style={styles_global.container}>
         <PeriodFilter onChangeDate={onChangeDate}/>
         <FlatList
-            data={list}
+            onRefresh={getDataFromApi}
+            refreshing={refreshing}
+            data={data}
             keyExtractor={ (item) => String(item.id)}
             showsVerticalScrollIndicator={true}
             renderItem={({ item }) => <ListItem data={item}
@@ -55,6 +74,7 @@ export default function ToBeReceived({navigation}) {
                     expiration_date: item.expiration_date, 
                     debit_date: item.debit_date,
                     category: item.category,
+                    digitableLine: item.digitableLine
                 }})
             }/>}
         />

@@ -3,6 +3,8 @@ import { StyleSheet, StatusBar, View, FlatList } from 'react-native';
 import { PeriodFilter } from '../../../components/Filter';
 import { ListItem } from '../../../components/List';
 import styles_global from '../../style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const list = [
     {
@@ -30,28 +32,58 @@ const list = [
 ]
 
 export default function ToBePaid({navigation}) {
-
     const [initDate, setInitDate] = useState();
     const [endDate, setEndDate] = useState();
+    const [data, setData] = useState();
+    const [userId, setUserId] = useState();
+    const [refreshing, setRefreshing] = useState(false);
         
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
         setEndDate(endingDate);
     } 
 
+    async function getUserId () {
+        try {  
+            AsyncStorage.getItem('userId')
+            .then((value) => {
+                if(value) {
+                    setUserId(JSON.parse(value));
+                };
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const getDataFromApi = () => {
+        setRefreshing(true);
+        //recebe apenas lançamentos com o status=1 (concluido) 
+        axios.get(`http://192.168.0.114:3000/bills?user_id=${userId}&status=0&type=0`)
+        .then((data) => {
+            //console.log(data.data)
+            setData(data.data)
+        })
+        .then(() => setRefreshing(false))
+        .catch((err) => console.error(err))
+    }
+
     useEffect(() => {
-        //executa o comando após a seleção do período
-        console.log('********* TELA A PAGAR **********');
-        console.log('De: ' + initDate);
-        console.log('Até: ' + endDate);
-    }), [initDate, endDate];
+        getUserId();
+    }), [];
+
+    useEffect(() => {
+        getDataFromApi();
+    }, [userId, initDate, endDate])
 
     return(
         <View style={styles_global.container}>
             {/* <StatusBar/> */}
             <PeriodFilter onChangeDate={onChangeDate}/>
             <FlatList
-                data={list}
+                refreshing={refreshing}
+                onRefresh={getDataFromApi}
+                data={data}
                 keyExtractor={ (item) => String(item.id)}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item }) => <ListItem data={item}
@@ -66,6 +98,7 @@ export default function ToBePaid({navigation}) {
                         expiration_date: item.expiration_date, 
                         debit_date: item.debit_date,
                         category: item.category,
+                        digitableLine: item.digitableLine
                     }})
                 }/>}
             />
