@@ -8,19 +8,5 @@
     }
   ],
   "bills": [
-    {
-      "user_id": 1,
-      "description": "Cartao de credito",
-      "type": 0,
-      "value": "450,00",
-      "status": 0,
-      "expiration_date": "2023-06-20",
-      "debit_date": "",
-      "category": "energia",
-      "digitableLine": "",
-      "paymentSlipUri": "",
-      "paymentReceiptUri": "",
-      "id": 1
-    }
   ]
 }

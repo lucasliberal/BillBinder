@@ -5,6 +5,7 @@ import { ListItem } from '../../../components/List';
 import styles_global from '../../style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { BASE_URL } from '../../../../mock/config';
 
 export default function Caixa({navigation, route}) {
     const [initDate, setInitDate] = useState();
@@ -13,6 +14,7 @@ export default function Caixa({navigation, route}) {
     const [data, setData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [updated, setUpdated] = useState(false);
+    const [error, setError] = useState(false);
 
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
@@ -35,12 +37,12 @@ export default function Caixa({navigation, route}) {
     const getDataFromApi = async () => {
         //recebe apenas lançamentos com o status=1 (concluido) 
         setRefreshing(true);
-        await axios.get(`http://192.168.0.114:3000/bills?user_id=${userId}&status=1`)
+        await axios.get(BASE_URL + `/bills?user_id=${userId}&status=1`)
         .then((data) => {
             setData(data.data);
         })
         .then(() => setRefreshing(false))
-        .catch((err) => console.error(err))
+        .catch((err) => setError(true))
     }
 
     useEffect(() => {
@@ -55,6 +57,8 @@ export default function Caixa({navigation, route}) {
         <View style={styles_global.container}>
             <StatusBar/>
             <PeriodFilter onChangeDate={onChangeDate}/>
+            {error && 
+            <Text style={styles_global.msg_error}>Erro na consulta. Contate o administrador!</Text>}
             <FlatList
                 onRefresh={getDataFromApi}
                 refreshing={refreshing}

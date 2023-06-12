@@ -152,6 +152,13 @@ const styles_global = StyleSheet.create({
     date_field:{
       flexDirection: 'row',
       justifyContent: 'space-between'
+    },
+    msg_error:{
+      textAlign: 'center',
+      fontSize: 16,
+      marginHorizontal:14,
+      marginVertical: 10,
+      fontWeight: '500'
     }
 });
 

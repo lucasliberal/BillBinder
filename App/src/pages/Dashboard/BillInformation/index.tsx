@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert, Switch} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
 import format from 'date-fns/format';
+import { BASE_URL } from '../../../../mock/config';
 
 import { ExpirationDatePicker, DebitDatePicker } from '../../../components/DatePicker';
 
@@ -28,6 +29,7 @@ export default function BillInformation({navigation, route}){
     const [paymentReceiptName, setPaymentReceiptName] = useState(route.params.item.paymentReceiptName); //comprovante endereço
     
     const [editable, setEditable] = useState(false);
+    const [prevStatus, setPrevStatus] = useState(status);
 
     //Ao mudar a data de validade
     const onChangeExpirationDate = async value => {
@@ -38,24 +40,50 @@ export default function BillInformation({navigation, route}){
         await setDebitDate(value);
     }
 
+    // const checkStatusChange = () => {
+    //     setPrevStatus(status)
+    //     if(prevStatus == status){
+    //         //nao houve alterações
+    //         return "none"
+    //     }else if (prevStatus == 0 && status == 1){
+    //         //houve alteração para concluído
+    //         return "concluded"
+    //     }else if (prevStatus == 1 && status == 0){
+    //         //houve alteração para pendente
+    //         return "pending"
+    //     }
+    // }
+
     //Submeter alterações
-    const submitChanges = () => {
-        Alert.alert('Informações atualizadas com sucesso!');
-        axios.put(`http://192.168.0.114:3000/bills/${id}`, {
+    const submit = () => {
+        axios.put(BASE_URL + `/bills/${id}`, {
             user_id: userId,
             description: description,
             type: type,
             value: value,
             status: status, //sempre o status de adição será 'pendente'
             expiration_date: format(expirationDate, "yyyy-MM-dd"),
-            debit_date: format(debitDate, "yyyy-MM-dd"),
+            debit_date: status==1 ? format(debitDate, "yyyy-MM-dd") : "",
             category: category,
             digitableLine: digitableLine,
             paymentSlipUri: paymentSlipUri,
             paymentReceiptUri: paymentSlipUri,
         })
-        setEditable(!editable);
+        .then (() => {
+            if (status == 1){
+                navigation.navigate("Caixa")
+           } else{
+                if(type == 0) //a pagar
+                    navigation.navigate("A pagar")
+                else if (type == 1) //a receber
+                    navigation.navigate("A receber")
+           }
+        })
+        .then (() => Alert.alert('Informações atualizadas com sucesso!'))
+        .catch ( (err) => Alert.alert('Erro ao salvar informações') )
+        //setEditable(!editable);      
     }
+   
 
     //Selecionar boleto de pagamento
     const pickPaymentSlip = async () => {
@@ -76,6 +104,16 @@ export default function BillInformation({navigation, route}){
     }
 
     const toggleStatusValue = () => {
+        //setPrevStatus(status);
+        // if(prevStatus == status){
+        //     //nao houve alterações
+        // }else if (prevStatus == 0 && status == 1){
+        //     //houve alteração para concluído
+        //     prevStatus()
+        // }else if (prevStatus == 1 && status == 0){
+        //     //houve alteração para pendente
+        // }
+
         if (status == 0){
             //setDebitDate(new Date("yyyy-MM-dd"));
             setStatus(1);
@@ -323,7 +361,7 @@ export default function BillInformation({navigation, route}){
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         {editable ? 
                             /** Botão Salvar */
-                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={submitChanges}>
+                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={submit}>
                                 <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Salvar</Text>
                             </TouchableOpacity> :
                             /** Botão Editar */

@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import styles_global from '../../style';
 import {format} from "date-fns";
@@ -10,13 +8,15 @@ import { ExpirationDatePicker } from '../../../components/DatePicker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { BASE_URL } from '../../../../mock/config';
+
 function ballonInput(){
     return(
         <TextInput placeholder='Digite...'></TextInput>
     );
 }
 
-export default function AddBill(){
+export default function AddBill({navigation}){
     const [expirationDate, setExpirationDate] = useState(new Date()); //data da validade
     const [type, setType] = useState(0); //tipo
     const [category, setCategory] = useState(); //categoria
@@ -57,7 +57,7 @@ export default function AddBill(){
     const submit = () => {
         //verifica se os campos obrigatórios estão preenchidos
         if((expirationDate && category && description && value)){
-            axios.post('http://192.168.0.114:3000/bills', {
+            axios.post(BASE_URL + '/bills', {
                 user_id: userId,
                 description: description,
                 type: type,
@@ -75,6 +75,9 @@ export default function AddBill(){
                 Alert.alert('', 'Lançamento adicionado com sucesso!');
                 cleanFields();
             })
+            .then( () => {
+                type==0 ? navigation.jumpTo("A pagar") : navigation.jumpTo("A receber") 
+            } )
         }
         else{
             Alert.alert('', 'Preencha todos os campos!');

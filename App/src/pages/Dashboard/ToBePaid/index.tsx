@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, StatusBar, View, FlatList } from 'react-native';
+import { StyleSheet, StatusBar, View, FlatList, Text} from 'react-native';
 import { PeriodFilter } from '../../../components/Filter';
 import { ListItem } from '../../../components/List';
 import styles_global from '../../style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { BASE_URL } from '../../../../mock/config';
 
 const list = [
     {
@@ -37,6 +38,7 @@ export default function ToBePaid({navigation}) {
     const [data, setData] = useState();
     const [userId, setUserId] = useState();
     const [refreshing, setRefreshing] = useState(false);
+    const [error, setError] = useState(false);
         
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
@@ -52,20 +54,20 @@ export default function ToBePaid({navigation}) {
                 };
             })
         } catch (error) {
-            console.error(error);
+            setError(true);
         }
     }
 
     const getDataFromApi = () => {
         setRefreshing(true);
         //recebe apenas lançamentos com o status=1 (concluido) 
-        axios.get(`http://192.168.0.114:3000/bills?user_id=${userId}&status=0&type=0`)
+        axios.get(BASE_URL + `/bills?user_id=${userId}&status=0&type=0`)
         .then((data) => {
             //console.log(data.data)
             setData(data.data)
         })
         .then(() => setRefreshing(false))
-        .catch((err) => console.error(err))
+        .catch((err) => setError(true))
     }
 
     useEffect(() => {
@@ -80,6 +82,8 @@ export default function ToBePaid({navigation}) {
         <View style={styles_global.container}>
             {/* <StatusBar/> */}
             <PeriodFilter onChangeDate={onChangeDate}/>
+            {error && 
+            <Text style={styles_global.msg_error}>Erro na consulta. Contate o administrador!</Text>}
             <FlatList
                 refreshing={refreshing}
                 onRefresh={getDataFromApi}
