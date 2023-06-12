@@ -6,12 +6,18 @@
   <li>Node.js</li>
   <li>React Native</li>
   <li>Android Studio</li>
-  <li>Expo</li>
  </ol>
   
-<h2>Como rodar</h2>
+<h2>Configuração e instalação</h2>
 <ol>
-  <li>Acessar diretório <a href="https://github.com/lucasliberal/BillBinder/tree/main/App"><i>App</i></a></li>
-  <li>Executar o comando <u><i>npm install</i></u> para instalar todas as dependências</li>
-  <li>Executar o comando <u><i>npx expo start</i></u> para rodar a aplicação</li>
+  <li><code>cd app</code> para acessar o diretório do App</li>
+  <li><code>npm install</code> para instalar as dependências</li>  
+  <h3>Rodando JSON Server</h3>
+  <ul>
+    <li><code>npx json-server --host *ip local da máquina* ./mock/db.json</code> para executar o JSON Server</li>
+  </ul>
+  <h3>Rodando a aplicação</h3>
+  <ul>
+    <li><code>npx expo start</code> para executar o Expo CLI</li>
+  </ul>
 </ol>
