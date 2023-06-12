@@ -26,9 +26,6 @@ export default function AddBill({navigation}){
     const [paymentSlipUri, setPaymentSlipUri] = useState(''); //boleto endereço
     const [paymentSlipName, setPaymentSlipName] = useState(''); //boleto nome
 
-    const [editablePickItem, setEditablePickItem] = useState('adicionar');
-    const [editablePickLabel, setEditablePickItemLabel] = useState('Digite...');
-
     const [userId, setUserId] = useState('');
 
     useEffect(() => {
