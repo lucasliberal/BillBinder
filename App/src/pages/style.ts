@@ -154,11 +154,24 @@ const styles_global = StyleSheet.create({
       justifyContent: 'space-between'
     },
     msg_error:{
+      backgroundColor: 'rgba(235, 52, 52, 0.2)',
+      borderRadius: 10,
       textAlign: 'center',
-      fontSize: 16,
+      fontSize: 15,
       marginHorizontal:14,
       marginVertical: 10,
-      fontWeight: '500'
+      fontWeight: '500',
+      padding: 4
+    },
+    msg:{
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      borderRadius: 10,
+      textAlign: 'center',
+      fontSize: 15,
+      marginHorizontal:14,
+      marginVertical: 10,
+      fontWeight: '500',
+      padding: 4
     }
 });
 

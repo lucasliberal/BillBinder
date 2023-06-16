@@ -1,44 +1,19 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, StatusBar, View, FlatList, Text} from 'react-native';
-import { PeriodFilter } from '../../../components/Filter';
+import { DateRange } from '../../../components/Filter';
 import { ListItem } from '../../../components/List';
 import styles_global from '../../style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { BASE_URL } from '../../../../mock/config';
 
-const list = [
-    {
-        id: 1,
-        user_id: 1,
-        description: 'Energia',
-        value: '540,00',
-        type: 0, // 1=receber | 0=pagar
-        status: 0, // 1=cocluido | 0=pendente
-        expiration_date: '2023-01-19', // data de vencimento
-        debit_date: '', // data do debito/recebimento
-        category: 'Energia',
-    },
-    {
-        id: 2,
-        user_id: 1,     
-        description: 'Telefone',
-        value: '60,00',
-        type: 0, // 1=receber | 0=pagar
-        status: 0, // 1=cocluido | 0=pendente
-        expiration_date: '2023-01-12', // data de vencimento
-        debit_date: '', // data do debito/recebimento
-        category: 'Telefone',    
-    },
-]
-
 export default function ToBePaid({navigation}) {
-    const [initDate, setInitDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [initDate, setInitDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [data, setData] = useState();
     const [userId, setUserId] = useState();
     const [refreshing, setRefreshing] = useState(false);
-    const [error, setError] = useState(false);
+    const [msg, setMsg] = useState({"msg": "", "code": 200});
         
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
@@ -54,7 +29,7 @@ export default function ToBePaid({navigation}) {
                 };
             })
         } catch (error) {
-            setError(true);
+            setMsg({"msg":"Erro interno. Porfavor contate o administrado!", "code": 404})
         }
     }
 
@@ -63,11 +38,17 @@ export default function ToBePaid({navigation}) {
         //recebe apenas lançamentos com o status=1 (concluido) 
         axios.get(BASE_URL + `/bills?user_id=${userId}&status=0&type=0`)
         .then((data) => {
-            //console.log(data.data)
-            setData(data.data)
+            var filteredData = data.data.filter(a => {
+                var date = new Date(a.expiration_date); //no a pagar a listagem é feita com base na data de vencimento
+                return (date >= initDate && date <=endDate);
+            })
+            setData(filteredData);
+            if (filteredData.length === 0){
+                setMsg({"msg": "Nenhum lançamento encontrado.", "code": 204}) // 204 = no content
+            }
         })
         .then(() => setRefreshing(false))
-        .catch((err) => setError(true))
+        .catch((err) => setMsg({"msg":"Erro interno. Porfavor contate o administrado!", "code": 404}))
     }
 
     useEffect(() => {
@@ -75,15 +56,17 @@ export default function ToBePaid({navigation}) {
     }), [];
 
     useEffect(() => {
-        getDataFromApi();
+        setMsg({"msg": "", "code": 200});
+        if(userId != undefined)
+            getDataFromApi();
     }, [userId, initDate, endDate])
 
     return(
         <View style={styles_global.container}>
             {/* <StatusBar/> */}
-            <PeriodFilter onChangeDate={onChangeDate}/>
-            {error && 
-            <Text style={styles_global.msg_error}>Erro na consulta. Contate o administrador!</Text>}
+            <DateRange onChangeDate={onChangeDate}/>
+            {msg.code == 404 && <Text style={styles_global.msg_error}>{msg.msg}</Text>}
+            {msg.code == 204 && <Text style={styles_global.msg}>{msg.msg}</Text>}
             <FlatList
                 refreshing={refreshing}
                 onRefresh={getDataFromApi}

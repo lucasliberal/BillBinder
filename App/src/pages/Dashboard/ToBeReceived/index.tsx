@@ -1,7 +1,7 @@
 import React, { useState, useEffect }from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { ListItem } from "../../../components/List";
-import { PeriodFilter } from "../../../components/Filter";
+import { DateRange } from "../../../components/Filter";
 import styles_global from '../../style';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
@@ -11,12 +11,12 @@ import { BASE_URL } from "../../../../mock/config";
 export default function ToBeReceived({navigation}) {
 
 
-    const [initDate, setInitDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [initDate, setInitDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [data, setData] = useState();
     const [userId, setUserId] = useState();
     const [refreshing, setRefreshing] = useState(false);
-    const [error, setError] = useState(false);
+    const [msg, setMsg] = useState({"msg": "", "code": 200});
         
     const onChangeDate = (initialDate, endingDate) => {
         setInitDate(initialDate);
@@ -32,7 +32,7 @@ export default function ToBeReceived({navigation}) {
                 };
             })
         } catch (error) {
-            setError(true)
+            setMsg({"msg":"Erro interno. Porfavor contate o administrado!", "code": 404});
         }
     }
 
@@ -41,10 +41,17 @@ export default function ToBeReceived({navigation}) {
         setRefreshing(true);
         await axios.get(BASE_URL + `/bills?user_id=${userId}&status=0&type=1`)
         .then((data) => {
-            setData(data.data)
+            var filteredData = data.data.filter(a => {
+                var date = new Date(a.expiration_date); //no a pagar a listagem é feita com base na data de vencimento
+                return (date >= initDate && date <=endDate);
+            })
+            setData(filteredData);
+            if (filteredData.length === 0){
+                setMsg({"msg": "Nenhum lançamento encontrado.", "code": 204}) // 204 = no content
+            }
         })
         .then(() => setRefreshing(false))
-        .catch((err) => setError(true))
+        .catch((err) => setMsg({"msg":"Erro interno. Porfavor contate o administrado!", "code": 404}))
     }
 
     useEffect(() => {
@@ -52,14 +59,17 @@ export default function ToBeReceived({navigation}) {
     }), [];
 
     useEffect(() => {
-        getDataFromApi();
+        setMsg({"msg": "", "code": 200});
+        if (userId != undefined){
+            getDataFromApi();
+        }
     }, [userId, initDate, endDate])
 
     return(
         <View style={styles_global.container}>
-        <PeriodFilter onChangeDate={onChangeDate}/>
-        {error && 
-            <Text style={styles_global.msg_error}>Erro na consulta. Contate o administrador!</Text>}
+        <DateRange onChangeDate={onChangeDate}/>
+        {msg.code == 404 && <Text style={styles_global.msg_error}>{msg.msg}</Text>}
+        {msg.code == 204 && <Text style={styles_global.msg}>{msg.msg}</Text>}
         <FlatList
             onRefresh={getDataFromApi}
             refreshing={refreshing}

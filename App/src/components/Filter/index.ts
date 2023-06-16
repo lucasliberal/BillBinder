@@ -1,3 +1,3 @@
-import PeriodFilter from "./PeriodFilter";
+import DateRange from "./DateRange";
 
-export { PeriodFilter };
+export { DateRange };

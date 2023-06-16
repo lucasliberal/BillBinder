@@ -15,7 +15,7 @@
   <h3>Configurando JSON Server</h3>
   <ul>
     <li><code>npx json-server --host *ip local da máquina* ./mock/db.json</code> para executar o JSON Server</li>
-    <li>Em <i>/App/mock/config.ts<i> defina o valor da URL base</li>
+    <li>Em <code>/App/mock/config.ts</code> defina o valor da URL base</li>
   </ul>
   <h3>Rodando a aplicação</h3>
   <ul>

@@ -5,14 +5,12 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import DateTimePicker, {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import styles_global from '../../pages/style';
 
-const actualMonth = (new Date().getMonth()+1);
-const actualYear = new Date().getFullYear();
-const nextYear = actualMonth >= 12 ? actualYear+1 : actualYear;
-const nextMonth = actualMonth >= 12 ? 1 : actualMonth+1;
+const MM = (new Date().getMonth());
+const YY = new Date().getFullYear();
 
-export default function PeriodFilter({onChangeDate}) {
-        const[initialDate, setInitialDate] = useState(new Date(actualYear.toString()+'-'+actualMonth.toString()+'-1'));
-        const[endDate, setEndDate] = useState(new Date(nextYear.toString()+'-'+nextMonth.toString()+'-1'));
+export default function DateRange({onChangeDate}) {
+        const[initialDate, setInitialDate] = useState(new Date(YY, MM, 1));
+        const[endDate, setEndDate] = useState(new Date(YY, MM+1, 0));
 
         //***** DATE FUNCTIONS AND CONSTANTS *****//
         //const [date, setDate] = useState(new Date());
@@ -173,6 +171,7 @@ export default function PeriodFilter({onChangeDate}) {
                                     value={endDate}
                                     onChange={onChangeEndDate}
                                     style={{height: 120, marginTop: -10}}
+                                    minimumDate={initialDate}
                                     />
                                 </View>
                             )}
