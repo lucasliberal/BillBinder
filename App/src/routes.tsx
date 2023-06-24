@@ -1,10 +1,15 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesome5, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import { getHeaderTitle } from "@react-navigation/elements";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {enableFreeze } from "react-native-screens"
 
-import { Login, Register, Caixa, AddBill, ToBePaid, ToBeReceived, BillInformation, Menu} from "./pages" ;
+
+//enableFreeze(true);
+
+import { SignIn, SignUp, Caixa, AddBill, ToBePaid, ToBeReceived, BillInformation, Menu} from "./pages" ;
 
 import { TopBar } from "./components/Bar";
 
@@ -12,14 +17,34 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 export function Routes(){
+    const [userId, setUserId] = useState();
+    const [isSignedIn, setIsSignedIn] = useState(false);
+
+    useEffect(() => {
+            AsyncStorage.getItem('userId')
+            .then((value) => {
+                if(value) {
+                    setUserId(JSON.parse(value));
+                };
+            })
+            .then(() => {
+                if(userId != null || undefined){
+                    setIsSignedIn(true);
+                }else{
+                    setIsSignedIn(false);
+                }
+            })
+            .catch ((error) => console.error(error))
+    }, [])
+
     return(
-        <Stack.Navigator screenOptions={{ headerShown: false, fullScreenGestureEnabled:false }}>
-            <Stack.Screen name='Login' component={Login}/>
-            <Stack.Screen name='Register' component={Register}/>
+        <Stack.Navigator screenOptions={{ headerShown: false, fullScreenGestureEnabled:false, animation: "none"}}>
+            <Stack.Screen name='Login' component={SignIn}/>
+            <Stack.Screen name='SignUp' component={SignUp}/>
             <Stack.Screen name='Dashboard' component={Dashboard}/>
             <Stack.Screen name='BillInformation' component={BillInformation}
             options={{headerShown: true, header:() => {return(<TopBar titulo={'Informações do lançamento'}/>)}}}/>
-        </Stack.Navigator>
+</Stack.Navigator>
     );
 }
 

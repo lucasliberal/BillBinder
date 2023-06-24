@@ -1,8 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import styles_global from "../../style";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Menu() {
+export default function Menu({navigation}) {
+    const signOut = async () => {
+        AsyncStorage.clear();
+        //navigation.navigate('BillInformation');
+    }
+
     return(
         <View style={[styles_global.container]}>
             <View style={styles.menu}>
@@ -14,7 +20,7 @@ export default function Menu() {
                     <Text style={styles.txt_btn}>Sobre nós</Text>
                 </TouchableOpacity>
                 <View style={styles.divisor}/>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity style={styles.btn} onPress={signOut}>
                     <Text style={styles.txt_btn}>Sair</Text>
                 </TouchableOpacity>
             </View>

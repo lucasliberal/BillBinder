@@ -6,9 +6,8 @@ import styles_global from '../../style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { BASE_URL } from '../../../../mock/config';
-import { set } from 'date-fns';
 
-export default function Caixa({navigation, route}) {
+export default function Caixa({navigation}) {
     const [initDate, setInitDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [userId, setUserId] = useState();
@@ -62,36 +61,45 @@ export default function Caixa({navigation, route}) {
         if (userId != undefined){
             getDataFromApi();
         }
+        // if(route.params){
+        //     setMsg({"msg": route.params.msg, "code": route.params.code})
+        //     setTimeout(() => {
+        //         setMsg({"msg": "", "code": 200});
+        //     }, 5000)
+        // }
     }, [userId, initDate, endDate]);   
     
     return(
         <View style={styles_global.container}>
             <StatusBar/>
             <DateRange onChangeDate={onChangeDate}/>
-            {msg.code == 404 && <Text style={styles_global.msg_error}>{msg.msg}</Text>}
-            {msg.code == 204 && <Text style={styles_global.msg}>{msg.msg}</Text>}
-            <FlatList
-                onRefresh={getDataFromApi}
-                refreshing={refreshing}
-                data={data}
-                keyExtractor={ (item) => String(item.id)}
-                showsVerticalScrollIndicator={true}
-                renderItem={({ item }) => <ListItem data={item} 
-                onPress={() => navigation.navigate('BillInformation', {
-                    item: {
-                        id:item.id, 
-                        user_id:item.user_id,
-                        description:item.description,
-                        value: item.value,
-                        type: item.type,
-                        status: item.status,
-                        expiration_date: item.expiration_date, 
-                        debit_date: item.debit_date,
-                        category: item.category,
-                        digitableLine: item.digitableLine
-                    }})
-                }/>}
-            />
+            <View>
+                {msg.code == 404 && <Text style={styles_global.msg_error}>{msg.msg}</Text>}
+                {msg.code == 204 && <Text style={styles_global.msg}>{msg.msg}</Text>}
+                {/* {msg.code == 201 && <Text style={[styles_global.msg_success,{position: 'absolute', height: 36, zIndex: 1, fontSize: 15, alignSelf: 'center'}]}>{msg.msg}</Text>} */}
+                <FlatList
+                    onRefresh={getDataFromApi}
+                    refreshing={refreshing}
+                    data={data}
+                    keyExtractor={ (item) => String(item.id)}
+                    showsVerticalScrollIndicator={true}
+                    renderItem={({ item }) => <ListItem data={item} 
+                    onPress={() => navigation.navigate('BillInformation', {
+                        item: {
+                            id:item.id, 
+                            user_id:item.user_id,
+                            description:item.description,
+                            value: item.value,
+                            type: item.type,
+                            status: item.status,
+                            expiration_date: item.expiration_date, 
+                            debit_date: item.debit_date,
+                            category: item.category,
+                            digitableLine: item.digitableLine
+                        }})
+                    }/>}
+                />
+            </View>
         </View>
     );
 }

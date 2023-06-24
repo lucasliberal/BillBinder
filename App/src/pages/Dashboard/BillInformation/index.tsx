@@ -6,6 +6,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
 import format from 'date-fns/format';
 import { BASE_URL } from '../../../../mock/config';
+import { mask, unmask, currency } from 'remask';
 
 import { ExpirationDatePicker, DebitDatePicker } from '../../../components/DatePicker';
 
@@ -29,7 +30,18 @@ export default function BillInformation({navigation, route}){
     const [paymentReceiptName, setPaymentReceiptName] = useState(route.params.item.paymentReceiptName); //comprovante endereço
     
     const [editable, setEditable] = useState(false);
-    const [prevStatus, setPrevStatus] = useState(status);
+    const [text, setText] = useState(type == 0 && status == 0 ? 'Pagar' : type == 1 && status == 0 ? 'Receber' : type == 0 && status == 1 ? 'Pago' : 'Recebido');
+
+    useEffect(() => {
+        if(status == 0 && type == 0)
+            setText('Pagar')
+        else if (status == 0 && type == 1)
+            setText('Receber')
+        else if (status == 1 && type == 0)
+            setText('Pago')
+        else 
+            setText('Recebido')
+    }, [status])
 
     //Ao mudar a data de validade
     const onChangeExpirationDate = async value => {
@@ -39,20 +51,6 @@ export default function BillInformation({navigation, route}){
     const onChangeDebitDate = async value => {
         await setDebitDate(value);
     }
-
-    // const checkStatusChange = () => {
-    //     setPrevStatus(status)
-    //     if(prevStatus == status){
-    //         //nao houve alterações
-    //         return "none"
-    //     }else if (prevStatus == 0 && status == 1){
-    //         //houve alteração para concluído
-    //         return "concluded"
-    //     }else if (prevStatus == 1 && status == 0){
-    //         //houve alteração para pendente
-    //         return "pending"
-    //     }
-    // }
 
     //Submeter alterações
     const submit = () => {
@@ -65,26 +63,17 @@ export default function BillInformation({navigation, route}){
             expiration_date: format(expirationDate, "yyyy-MM-dd"),
             debit_date: status==1 ? format(debitDate, "yyyy-MM-dd") : "",
             category: category,
-            digitableLine: digitableLine,
+            digitableLine: unmask(digitableLine),
             paymentSlipUri: paymentSlipUri,
             paymentReceiptUri: paymentSlipUri,
         })
         .then (() => {
-            if (status == 1){
-                navigation.navigate("Caixa")
-           } else{
-                if(type == 0) //a pagar
-                    navigation.navigate("A pagar")
-                else if (type == 1) //a receber
-                    navigation.navigate("A receber")
-           }
+            setEditable(!editable)
         })
-        .then (() => Alert.alert('Informações atualizadas com sucesso!'))
         .catch ( (err) => Alert.alert('Erro ao salvar informações') )
         //setEditable(!editable);      
     }
    
-
     //Selecionar boleto de pagamento
     const pickPaymentSlip = async () => {
         let result = await DocumentPicker.getDocumentAsync({});
@@ -103,23 +92,16 @@ export default function BillInformation({navigation, route}){
         setPaymentReceiptName(result.name);
     }
 
-    const toggleStatusValue = () => {
-        //setPrevStatus(status);
-        // if(prevStatus == status){
-        //     //nao houve alterações
-        // }else if (prevStatus == 0 && status == 1){
-        //     //houve alteração para concluído
-        //     prevStatus()
-        // }else if (prevStatus == 1 && status == 0){
-        //     //houve alteração para pendente
-        // }
-
+    const changeStatus = async () => {
         if (status == 0){
             //setDebitDate(new Date("yyyy-MM-dd"));
             setStatus(1);
-        }else{
-            //setDebitDate(new Date("yyyy-MM-dd"));
-            setStatus(0);
+            axios.patch(BASE_URL + `/bills/${id}`, {
+                status: 1,
+                debit_date: format(debitDate, "yyyy-MM-dd")
+            })
+            navigation.navigate('Caixa');
+            Alert.alert('', `Lançamento ${description} atualizado!`)
         }
     }
     //***** */
@@ -211,8 +193,10 @@ export default function BillInformation({navigation, route}){
                         <View style={{flex: 1}}>
                             <Text style={styles_global.txt_inputTitle}>Valor*</Text>
                             <TextInput
-                            onChangeText={setValue} 
-                            value={value}
+                            onChangeText={ value => {
+                                setValue(currency.unmask({locale: 'pt-BR', currency: 'BRL', value: value}))
+                            }} 
+                            value={currency.mask({locale: 'pt-BR', currency: 'BRL', value: value})}
                             style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width:'100%'}]}
                             placeholder='Digite o valor' 
                             placeholderTextColor={'black'}
@@ -220,9 +204,9 @@ export default function BillInformation({navigation, route}){
                             keyboardType='numeric'
                             editable={editable}/>
                         </View>
-                        <View>
+                        {/* <View>
                             <View style={{flexDirection: 'column', alignItems:'flex-start', flex: 1}}>
-                                {/** Switch */}
+                                //Switch 
                                 <Text style={styles_global.txt_inputTitle}>Concluído</Text>
                                 <View style={[editable ? styles_global.select_input_container : styles_global.select_input_container_alternative, {width: '100%', alignItems: 'center', justifyContent:'center'}]}>
                                     <Switch
@@ -235,87 +219,19 @@ export default function BillInformation({navigation, route}){
                                     />
                                 </View>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
-                
-                    <>{/* Linha digitável modelo 2
-                    <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
-                    <View style={{rowGap: 12, marginBottom: 16}}>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[0]}
-                            editable={editable}
-
-                            />
-                            <TextInput 
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[1]}
-                            editable={editable}
-                            />
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[2]}
-                            editable={editable}
-                            />
-                        </View>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={6}
-                            keyboardType='numeric'
-                            value={digitableLine[3]}
-                            editable={editable}/>
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={5}
-                            keyboardType='numeric'
-                            value={digitableLine[4]}
-                            editable={editable}
-                            />
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine]}
-                            maxLength={6}
-                            keyboardType='numeric'
-                            value={digitableLine[5]}
-                            editable={editable}
-                            />
-                        </View>
-                        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%'}}>
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine, {width: 60}]}
-                            maxLength={1}
-                            keyboardType='numeric'
-                            value={digitableLine[6]}
-                            editable={editable}
-                            />
-                            <TextInput
-                            style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, styles_global.txt_input_digitableLine, {width: 237}]}
-                            maxLength={14}
-                            keyboardType='numeric'
-                            value={digitableLine[7]}
-                            editable={editable}
-                            />
-                        </View>
-
-                    </View> */}</>
 
                     {/** Linha digitável */}
                     <Text style={styles_global.txt_inputTitle}>Linha digitável</Text>
                     <TextInput
-                    value={digitableLine}
-                    onChangeText={setDigitableLine}
+                    value={mask(digitableLine, '99999.99999 99999.999999 99999.999999 9 99999999999999')}
+                    onChangeText={value => setDigitableLine(unmask(value))}
                     style={[editable ? styles_global.txt_input : styles_global.txt_input_alternative, {width: '100%', height: 55}]}
                     placeholder='Digite a linha digitável' placeholderTextColor={'black'}
                     multiline={true}
                     numberOfLines={2}
-                    maxLength={48}
+                    maxLength={54}
                     editable={editable}
                     keyboardType='numeric'
                     />
@@ -356,26 +272,31 @@ export default function BillInformation({navigation, route}){
                             </TouchableOpacity>}
                         </View>
                     </View>
-                        <Text style={{marginTop: 20, textAlign: 'center', fontSize: 11}}>Obs.: O campo data de pagamento/recebimento só fica visível quando o status for concluído.</Text>
-        
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        {editable ? 
-                            /** Botão Salvar */
-                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={submit}>
-                                <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Salvar</Text>
-                            </TouchableOpacity> :
-                            /** Botão Editar */
-                            <TouchableOpacity style={[styles_global.btn1, {width: 150}]} activeOpacity={0.8} onPress={() => setEditable(!editable)}>
-                                <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Editar</Text>
-                            </TouchableOpacity>
-                        }
-                        {/** Botão voltar */}
-                            <TouchableOpacity style={[styles_global.btn2, {width: 150}]} activeOpacity={0.8} onPress={() => navigation.pop()}>
-                                <Text style={{paddingTop: 10, paddingBottom: 10, fontWeight: 'bold', color: 'white', fontSize: 16, alignSelf: 'center', justifyContent: 'center'}}>Voltar</Text>
-                            </TouchableOpacity>
-                    </View>                    
-                </ScrollView>
+                        <Text style={{marginTop: 20, textAlign: 'center', fontSize: 11}}>Obs.: O campo data de pagamento/recebimento só fica visível quando o status for concluído.</Text>       
+                </ScrollView>      
             </KeyboardAvoidingView>
+            <View style={styles_local.buttons}>
+                        {editable ? 
+                    /** Botão Salvar */
+                    <TouchableOpacity style={[styles_local.btn]} activeOpacity={0.8} onPress={submit}>
+                        <AntDesign name="save" size={24} color="white" />
+                    </TouchableOpacity> :
+                    /** Botão Editar */
+                    <TouchableOpacity style={[styles_local.btn, {}]} activeOpacity={0.8} onPress={() => setEditable(!editable)}>
+                        <AntDesign name="edit" size={24} color="white" />
+                        {/* <Text style={styles_local.btn_txt}>Editar</Text> */}
+                    </TouchableOpacity>
+                    }
+                {/** Botão quitar*/}
+                <TouchableOpacity style={status == 0 ? styles_local.btn2 : styles_local.btn2_innactive} activeOpacity={0.8} onPress={changeStatus} disabled={!editable}>
+                    <Text style={styles_local.btn_txt}>{text}</Text>
+                </TouchableOpacity>
+                {/** Botão voltar */}
+                    <TouchableOpacity style={[styles_local.btn, {backgroundColor: '#A0A0A0'}]} activeOpacity={0.8} onPress={() => navigation.pop()}>
+                        <AntDesign name="back" size={24} color="white" />
+                        {/* <Text style={styles_local.btn_txt}>Voltar</Text> */}
+                    </TouchableOpacity>
+            </View>   
         </View>
     );
 }
@@ -383,10 +304,47 @@ export default function BillInformation({navigation, route}){
 const styles_local = StyleSheet.create({
     conteudo:{
         paddingTop: 24,
-        paddingBottom: 24,
-        paddingStart: 24,
-        paddingEnd: 24,
+        paddingHorizontal: 24,
         flex: 1,
         backgroundColor: '#e7e7e7',
     },
+    buttons:{
+        elevation: 15,
+        backgroundColor: '#e7e7e7',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 24, 
+        paddingVertical: 24
+    },
+    btn:{
+        width: 40,
+        height: 40,
+        backgroundColor: '#14423C',
+        borderRadius: 5,
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    btn2: {
+        width: 170,
+        backgroundColor: '#14423C',
+        borderRadius: 5,
+        alignSelf: 'center',
+    },
+    btn2_innactive: {
+        width: 170,
+        backgroundColor: '#14423C',
+        opacity: 0.5,
+        borderRadius: 5,
+        alignSelf: 'center',
+    },
+    btn_txt:{
+        paddingTop: 10,
+        paddingBottom: 10,
+        fontWeight: 'normal',
+        color: 'white',
+        fontSize: 16, 
+        alignSelf: 'center',
+        justifyContent: 'center'
+    }
 });

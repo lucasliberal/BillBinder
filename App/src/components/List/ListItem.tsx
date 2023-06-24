@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import format from 'date-fns/format';
 import { AntDesign } from '@expo/vector-icons';
+import {mask, unmask, currency} from 'remask';
 
 export default function ListItem( {data, onPress} ){
     const title = data.type === 0 && data.status === 1 ? 'Pago' :
@@ -23,8 +24,8 @@ export default function ListItem( {data, onPress} ){
                 </View>
                 <Text style={styles.valor}>
                     {data.type === 1 ?
-                        `+ R$ ${data.value}` :
-                        `- R$ ${data.value}`}
+                        `+ ${currency.mask({locale: 'pt-BR', currency: 'BRL', value: data.value})}` :
+                        `- ${currency.mask({locale: 'pt-BR', currency: 'BRL', value: data.value})}`}
                 </Text>
             </View>
         </TouchableOpacity>

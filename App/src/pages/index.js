@@ -1,10 +1,10 @@
 import AddBill from "./Dashboard/AddBill";
 import Caixa from "./Dashboard/Caixa";
-import Login from "./Authentication/SignIn";
+import SignIn from "./Authentication/SignIn";
+import SignUp from "./Authentication/SignUp";
 import Menu from "./Dashboard/Menu";
 import ToBePaid from "./Dashboard/ToBePaid";
 import ToBeReceived from "./Dashboard/ToBeReceived";
 import BillInformation from "./Dashboard/BillInformation";
-import Register from "./Authentication/Register";
 
-export { AddBill, Caixa, Login, Menu, ToBePaid, ToBeReceived, BillInformation, Register };
+export { AddBill, Caixa, SignIn, Menu, ToBePaid, ToBeReceived, BillInformation, SignUp};

@@ -1,9 +1,17 @@
 import { StyleSheet } from "react-native";
 
-const styles_global = StyleSheet.create({
+const styles_global = StyleSheet.create(
+  {
     container:{
         flex: 1,
         backgroundColor:'#E1E1E1',
+    },
+
+    logo:{
+      alignSelf: 'center',
+      height: 100,
+      width: 100,
+      marginBottom: 10,
     },
 
     //TEXT INPUT
@@ -13,7 +21,7 @@ const styles_global = StyleSheet.create({
       borderWidth: 2,
       paddingLeft: 14,
       paddingRight: 14,
-      marginBottom: 16,
+      marginBottom: 20,
       fontSize: 16,
       borderRadius: 5
     },
@@ -24,15 +32,20 @@ const styles_global = StyleSheet.create({
       borderColor: "rgba(20, 66, 60, 0.2)",
       borderWidth:2,
       paddingLeft: 14,
-      marginBottom: 16,
+      marginBottom: 20,
       fontSize: 16,
       borderRadius: 5
     },
     txt_inputTitle:{
+      paddingHorizontal: 5,
+      alignSelf: 'flex-start',
+      backgroundColor: '#e7e7e7',
       color: '#14423C',
       fontSize: 15,
-      fontWeight: 'bold',
-      marginBottom: 6
+      fontWeight: '500',
+      marginBottom:-10,
+      marginStart: 10,
+      zIndex: 1,
     },
     txt_inputLoginPage: {
       width: 300,
@@ -43,12 +56,11 @@ const styles_global = StyleSheet.create({
       borderColor: 'white',
       borderLeftWidth: 10,
       borderBottomWidth: 2,
-      marginBottom: 40,
       color: 'white',
       fontSize: 16,
       fontWeight: 'bold'
     },
-    txt_inputRegisterPage: {
+    txt_inputSignUpPage: {
       display: 'flex',
       textAlign: 'left',
       width: 300,
@@ -70,7 +82,7 @@ const styles_global = StyleSheet.create({
       height: 40,
       borderWidth: 2,
       borderColor: '#14423C',
-      marginBottom: 16,
+      marginBottom: 20,
       borderRadius: 5
     },
     select_input:{
@@ -83,7 +95,7 @@ const styles_global = StyleSheet.create({
       height: 40,
       borderColor: "rgba(20, 66, 60, 0.2)",
       borderWidth: 2,
-      marginBottom: 16,
+      marginBottom: 20,
       borderRadius: 5
     },
     select_input_alternative:{
@@ -93,7 +105,6 @@ const styles_global = StyleSheet.create({
     //BUTTON
     btn_login1:{
       width: 180,
-      elevation: 8,
       backgroundColor: '#F5F5F5',
       borderRadius: 30,
       paddingVertical: 10,
@@ -118,7 +129,6 @@ const styles_global = StyleSheet.create({
       backgroundColor: '#14423C',
       borderRadius: 5,
       alignSelf: 'center',
-      marginTop: 20,
     },
     btn2:{
       width: "100%",
@@ -153,25 +163,64 @@ const styles_global = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between'
     },
+    msg_container:{
+      zIndex: 1,
+      height: 40,
+    },
+    msg_container_v2:{
+      zIndex: 1,
+      position: 'absolute',
+      width: '100%',
+      height: 36,
+      paddingHorizontal: 24
+    },
     msg_error:{
-      backgroundColor: 'rgba(235, 52, 52, 0.2)',
-      borderRadius: 10,
+      flex:1,
+      elevation: 10,
+      textAlignVertical: 'center',
+      borderBottomLeftRadius: 15,
+      borderBottomRightRadius: 15,
+      backgroundColor: 'rgba(255, 55, 55, 1)',
       textAlign: 'center',
-      fontSize: 15,
-      marginHorizontal:14,
-      marginVertical: 10,
+      color: 'white',
+      fontSize: 18,
       fontWeight: '500',
-      padding: 4
+    },
+    msg_error_v2:{
+      flex: 1,
+      elevation: 8,
+      textAlignVertical: 'center',
+      borderBottomLeftRadius: 15,
+      borderBottomRightRadius: 15,
+      backgroundColor: 'rgba(255, 55, 55, 1)',
+      textAlign: 'center',
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '500',
+    },
+    msg_success:{
+      flex:1,
+      elevation: 10,
+      paddingHorizontal: 10,
+      textAlignVertical: 'center',
+      borderBottomLeftRadius: 15,
+      borderBottomRightRadius: 15,
+      backgroundColor: 'rgba(50, 168, 75, 1)',
+      textAlign: 'center',
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '500',
     },
     msg:{
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
-      borderRadius: 10,
+      borderBottomLeftRadius: 15,
+      borderBottomRightRadius: 15,
+      height: 36,
+      textAlignVertical: 'center',
       textAlign: 'center',
+      marginHorizontal: 24,
       fontSize: 15,
-      marginHorizontal:14,
-      marginVertical: 10,
-      fontWeight: '500',
-      padding: 4
+      fontWeight: '500'
     }
 });
 

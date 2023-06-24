@@ -51,7 +51,7 @@ export default function ToBeReceived({navigation}) {
             }
         })
         .then(() => setRefreshing(false))
-        .catch((err) => setMsg({"msg":"Erro interno. Porfavor contate o administrado!", "code": 404}))
+        .catch((err) => setMsg({"msg":"Erro interno. Porfavor contate o administrador!", "code": 404}))
     }
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export default function ToBeReceived({navigation}) {
     return(
         <View style={styles_global.container}>
         <DateRange onChangeDate={onChangeDate}/>
-        {msg.code == 404 && <Text style={styles_global.msg_error}>{msg.msg}</Text>}
+        {msg.code == 404 && <Text style={[styles_global.msg_error, {fontSize: 15, marginHorizontal: 14, marginVertical: 10, padding: 4}]}>{msg.msg}</Text>}
         {msg.code == 204 && <Text style={styles_global.msg}>{msg.msg}</Text>}
         <FlatList
             onRefresh={getDataFromApi}
