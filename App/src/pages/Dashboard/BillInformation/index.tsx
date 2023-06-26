@@ -288,7 +288,7 @@ export default function BillInformation({navigation, route}){
                     </TouchableOpacity>
                     }
                 {/** Botão quitar*/}
-                <TouchableOpacity style={status == 0 ? styles_local.btn2 : styles_local.btn2_innactive} activeOpacity={0.8} onPress={changeStatus} disabled={!editable}>
+                <TouchableOpacity style={status == 0 ? styles_local.btn2 : styles_local.btn2_innactive} activeOpacity={0.8} onPress={changeStatus}>
                     <Text style={styles_local.btn_txt}>{text}</Text>
                 </TouchableOpacity>
                 {/** Botão voltar */}

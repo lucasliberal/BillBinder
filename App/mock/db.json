@@ -5,66 +5,9 @@
       "name": "admin",
       "password": "admin",
       "email": "admin@admin.com"
-    },
-    {
-      "name": "lucas",
-      "password": "lucas",
-      "email": "lucas@gmail.com",
-      "id": 2
-    },
-    {
-      "name": "Teste",
-      "password": "teste",
-      "email": "teste@gmail.com",
-      "id": 3
-    },
-    {
-      "name": "Teste1",
-      "password": "teste1",
-      "email": "teste1@gmail.com",
-      "id": 4
     }
   ],
   "bills": [
-    {
-      "user_id": 1,
-      "description": "Salário Junho",
-      "type": 1,
-      "value": 1341,
-      "status": 1,
-      "expiration_date": "2023-05-30",
-      "debit_date": "2023-06-25",
-      "category": "salario",
-      "digitableLine": "",
-      "id": 1
-    },
-    {
-      "user_id": 1,
-      "description": "13° salario",
-      "type": 1,
-      "value": 365.2,
-      "status": 1,
-      "expiration_date": "2023-06-02",
-      "debit_date": "2023-06-24",
-      "category": "salario",
-      "digitableLine": "",
-      "paymentSlipUri": "",
-      "paymentReceiptUri": "",
-      "id": 2
-    },
-    {
-      "user_id": 1,
-      "description": "Gorgeta",
-      "type": 0,
-      "value": 5.2,
-      "status": 1,
-      "expiration_date": "2023-06-24",
-      "debit_date": "2023-06-24",
-      "category": "outro",
-      "digitableLine": "",
-      "paymentSlipUri": "",
-      "paymentReceiptUri": "",
-      "id": 3
-    }
+    
   ]
 }
